@@ -2,559 +2,1024 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>CAN Mac Analyzer</title>
-<!--
-╔══════════════════════════════════════════════════════════════╗
-║  CAN Mac Analyzer - 版本信息                                  ║
-║  ⚠️ 重要：任何代码改动都必须同步更新下方的版本号和日期时间！      ║
-║  版本号格式：vX.Y.Z                                            ║
-║  日期格式：YYYY-MM-DD HH:MM                                   ║
-╚══════════════════════════════════════════════════════════════╝
--->
-<script>
-/* ============================================================
- * CAN Mac Analyzer - 版本配置
- * ⚠️ 每次代码修改都必须更新 VERSION 和 BUILD_DATE
- * ============================================================ */
-var APP_VERSION = "v1.0.0";
-var BUILD_DATE = "2026-08-17 15:50";
-/* ============================================================ */
+<script id="pako-inline">
+/* pako 2.1.0 inline - MIT+Zlib */
+!function(t,e){"object"==typeof exports&&"undefined"!=typeof module?e(exports):"function"==typeof define&&define.amd?define(["exports"],e):e((t="undefined"!=typeof globalThis?globalThis:t||self).pako={})}(this,(function(t){"use strict";function e(t){let e=t.length;for(;--e>=0;)t[e]=0}const a=256,i=286,n=30,s=15;let b,g,p;const f=new Array(512);const c=new Array(256);const u=new Array(29);const w=new Array(n);function m(t,e,a,i,n){this.static_tree=t,this.extra_bits=e,this.extra_base=a,this.elems=i,this.max_length=n,this.has_stree=t&&t.length}let F=!1;const d=new Array(576);const _=new Array(60);const r=new Uint8Array([0,0,0,0,0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,0]);const o=new Uint8Array([0,0,0,0,1,1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11,12,12,13,13]);const l=new Uint8Array([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,3,7]);const h=new Uint8Array([16,17,18,0,8,7,9,6,10,5,11,4,12,3,13,2,14,1,15]);
+const v=t=>t<256?f[t]:f[256+(t>>>7)];
+const A=(t,e)=>{let a=0;do{a|=1&t,t>>>=1,a<<=1}while(--e>0);return a>>>1};
+const E=(t,e,a)=>{const i=new Array(16);let n,r,o=0;for(n=1;n<=s;n++)o=o+a[n-1]<<1,i[n]=o;for(r=0;r<=e;r++){let e=t[2*r+1];0!==e&&(t[2*r]=A(i[e]++,e))}};
+const K={Z_NO_FLUSH:0,Z_PARTIAL_FLUSH:1,Z_SYNC_FLUSH:2,Z_FULL_FLUSH:3,Z_FINISH:4,Z_BLOCK:5,Z_TREES:6,Z_OK:0,Z_STREAM_END:1,Z_NEED_DICT:2,Z_ERRNO:-1,Z_STREAM_ERROR:-2,Z_DATA_ERROR:-3,Z_MEM_ERROR:-4,Z_BUF_ERROR:-5,Z_NO_COMPRESSION:0,Z_BEST_SPEED:1,Z_BEST_COMPRESSION:9,Z_DEFAULT_COMPRESSION:-1,Z_FILTERED:1,Z_HUFFMAN_ONLY:2,Z_RLE:3,Z_FIXED:4,Z_DEFAULT_STRATEGY:0,Z_BINARY:0,Z_TEXT:1,Z_UNKNOWN:2,Z_DEFLATED:8};
+const Ne=t=>(t>>>24&255)+(t>>>8&65280)+((65280&t)<<8)+((255&t)<<24);
+const H=(t,e,a,i)=>{const n=((t)=>{const e=new Uint32Array(256);for(var a=0;a<256;a++){let t=a;for(var i=0;i<8;i++)t=1&t?3988292384^t>>>1:t>>>1;e[a]=t}return e})(),s=i+a;t^=-1;for(let a=i;a<s;a++)t=t>>>8^n[255&(t^e[a])];return-1^t};
+const C=(t,e,a,i)=>{let n=65535&t|0,s=t>>>16&65535|0,r=0;for(;0!==a;){r=a>2e3?2e3:a,a-=r;do{n=n+e[i++]|0,s=s+n|0}while(--r);n%=65521,s%=65521}return n|s<<16|0};
+const j={2:"need dictionary",1:"stream end",0:"","-1":"file error","-2":"stream error","-3":"data error","-4":"insufficient memory","-5":"buffer error","-6":"incompatible version"};
+function qt(){this.input=null,this.next_in=0,this.avail_in=0,this.total_in=0,this.output=null,this.next_out=0,this.avail_out=0,this.total_out=0,this.msg="",this.state=null,this.data_type=2,this.adler=0}
+function Be(){this.strm=null,this.mode=0,this.last=!1,this.wrap=0,this.havedict=!1,this.flags=0,this.dmax=0,this.check=0,this.total=0,this.head=null,this.wbits=0,this.wsize=0,this.whave=0,this.wnext=0,this.window=null,this.hold=0,this.bits=0,this.length=0,this.offset=0,this.extra=0,this.lencode=null,this.distcode=null,this.lenbits=0,this.distbits=0,this.ncode=0,this.nlen=0,this.ndist=0,this.have=0,this.next=null,this.lens=new Uint16Array(320),this.work=new Uint16Array(288),this.lendyn=null,this.distdyn=null,this.sane=0,this.back=0,this.was=0}
+const Ce=t=>{if(!t)return 1;const e=t.state;return!e||e.strm!==t||e.mode<16180||e.mode>16211?1:0};
+const Me=t=>{if(Ce(t))return K.Z_STREAM_ERROR;const e=t.state;return t.total_in=t.total_out=e.total=0,t.msg="",e.wrap&&(t.adler=1&e.wrap),e.mode=16180,e.last=0,e.havedict=0,e.flags=-1,e.dmax=32768,e.head=null,e.hold=0,e.bits=0,e.lencode=e.lendyn=new Int32Array(852),e.distcode=e.distdyn=new Int32Array(592),e.sane=1,e.back=-1,K.Z_OK};
+const He=t=>{if(Ce(t))return K.Z_STREAM_ERROR;const e=t.state;return e.wsize=0,e.whave=0,e.wnext=0,Me(t)};
+const je=(t,e)=>{let a;if(Ce(t))return K.Z_STREAM_ERROR;const i=t.state;return e<0?(a=0,e=-e):(a=5+(e>>4),e<48&&(e&=15)),e&&(e<8||e>15)?K.Z_STREAM_ERROR:(null!==i.window&&i.wbits!==e&&(i.window=null),i.wrap=a,i.wbits=e,He(t))};
+const Ke=(t,e)=>{if(!t)return K.Z_STREAM_ERROR;const a=new Be;t.state=a,a.strm=t,a.window=null,a.mode=16180;const i=je(t,e);return i!==K.Z_OK&&(t.state=null),i};
+const We=(t,e,a,i)=>{const n=t.state;return null===n.window&&(n.wsize=1<<n.wbits,n.wnext=0,n.whave=0,n.window=new Uint8Array(n.wsize)),i>=n.wsize?(n.window.set(e.subarray(a-n.wsize,a),0),n.wnext=0,n.whave=n.wsize):(function(t,e,a,i){let n;const s=t.state;i>s.wsize&&(i=s.wsize);n=s.wsize-s.wnext;i>n&&(n=i);s.window.set(e.subarray(a-i,a-i+n),s.wnext);(i-=n)?(s.window.set(e.subarray(a-i,a),0),s.wnext=i,s.whave=s.wsize):(s.wnext+=n,s.wnext===s.wsize&&(s.wnext=0),s.whave<s.wsize&&(s.whave+=n))})(t,e,a,i),0};
+const de=function(t,e){let a,i,n,s,r,o,l,h,d,_,f,c,u,m;const w=t.state;a=t.next_in,u=t.input;i=a+(t.avail_in-5);n=t.next_out,m=t.output;s=n-(e-t.avail_out);r=n+(t.avail_out-257);o=w.dmax;l=w.size;h=w.whave;d=w.wnext;_=w.window;f=w.hold;c=w.bits;while(1){if(c<15){f+=u[a++]<<c;c+=8;f+=u[a++]<<c;c+=8}let g=w.lencode[f&((1<<w.lenbits)-1)];let p=g>>>24;f>>>=p;c-=p;let k=g>>>16&255;if(0===k){m[n++]=65535&g}else{if(!(16&k)){if(0==(64&k)){g=w.lencode[(65535&g)+(f&((1<<k)-1))];continue}if(32&k){w.mode=16191;break}t.msg="invalid literal/length code";w.mode=16209;break}let b=65535&g;k&=15;if(k){if(c<k){f+=u[a++]<<c;c+=8}b+=f&((1<<k)-1);f>>>=k;c-=k}if(c<15){f+=u[a++]<<c;c+=8;f+=u[a++]<<c;c+=8}g=w.distcode[f&((1<<w.distbits)-1)];p=g>>>24;f>>>=p;c-=p;k=g>>>16&255;if(!(16&k)){if(0==(64&k)){g=w.distcode[(65535&g)+(f&((1<<k)-1))];continue}t.msg="invalid distance code";w.mode=16209;break}let v=65535&g;k&=15;if(c<k){f+=u[a++]<<c;c+=8;if(c<k){f+=u[a++]<<c;c+=8}}v+=f&((1<<k)-1);f>>>=k;c-=k;if(v>o){t.msg="invalid distance too far back";w.mode=16209;break}let y=n-s;if(v>y){if(y=v-y,y>h&&w.sane){t.msg="invalid distance too far back";w.mode=16209;break}let a,i;if(0===d){a=l-y;if(y<b){b-=y;do{m[n++]=_[a++]}while(--y);a=n-v;i=m}}else if(d<y){a=l+d-y;y-=d;if(y<b){b-=y;do{m[n++]=_[a++]}while(--y);a=0;if(d<b){y=d;b-=y;do{m[n++]=_[a++]}while(--y);a=n-v;i=m}}}else{a=d-y;if(y<b){b-=y;do{m[n++]=_[a++]}while(--y);a=n-v;i=m}}for(;b>2;){m[n++]=i[a++];m[n++]=i[a++];m[n++]=i[a++];b-=3}if(b){m[n++]=i[a++];if(b>1)m[n++]=i[a++]}}else{a=n-v;do{m[n++]=m[a++];m[n++]=m[a++];m[n++]=m[a++];b-=3}while(b>2);if(b){m[n++]=m[a++];if(b>1)m[n++]=m[a++]}}}}break}while(a<i&&n<r){b=c>>3;a-=b;c-=b<<3;f&=(1<<c)-1;t.next_in=a;t.next_out=n;t.avail_in=a<i?i-a+5:5-(a-i);t.avail_out=n<r?r-n+257:257-(n-r);w.hold=f;w.bits=c};
+const qe={inflateInit:t=>Ke(t,15),inflateInit2:Ke,inflateReset:He,inflateReset2:je,inflateResetKeep:Me,inflate:(t,e)=>{let a,i,n,s,r,o,l,h,d,_,f,c,u,m,w,b,g,p,k,v,y,x,z=0;const A=new Uint8Array(4);let E,R;const Z=new Uint8Array([16,17,18,0,8,7,9,6,10,5,11,4,12,3,13,2,14,1,15]);if(Ce(t)||!t.output||!t.input&&0!==t.avail_in)return K.Z_STREAM_ERROR;const U=t.state;U.mode===16192&&(U.mode=16193);r=t.next_out;n=t.output;l=t.avail_out;s=t.next_in;i=t.input;o=t.avail_in;h=U.hold;d=U.bits;_=o;f=l;x=K.Z_OK;t:for(;;)switch(U.mode){case 16180:if(0===U.wrap){U.mode=16193;break}for(;d<16;){if(0===o)break t;o--;h+=i[s++]<<d;d+=8}if(2&U.wrap&&35615===h){0===U.wbits&&(U.wbits=15);U.check=0;A[0]=255&h;A[1]=h>>>8&255;U.check=H(U.check,A,2,0);h=0;d=0;U.mode=16181;break}if(U.head&&(U.head.done=!1),!(1&U.wrap)||(((255&h)<<8)+(h>>8))%31){t.msg="incorrect header check";U.mode=16209;break}if((15&h)!==K.Z_DEFLATED){t.msg="unknown compression method";U.mode=16209;break}h>>>=4;d-=4;y=8+(15&h);0===U.wbits&&(U.wbits=y);if(y>15||y>U.wbits){t.msg="invalid window size";U.mode=16209;break}U.dmax=1<<U.wbits;U.flags=0;t.adler=U.check=1;U.mode=512&h?16189:16190;h=0;d=0;break;case 16181:for(;d<16;){if(0===o)break t;o--;h+=i[s++]<<d;d+=8}U.flags=h;if((255&U.flags)!==K.Z_DEFLATED){t.msg="unknown compression method";U.mode=16209;break}if(57344&U.flags){t.msg="unknown header flags set";U.mode=16209;break}U.head&&(U.head.text=h>>8&1);512&U.flags&&4&U.wrap&&(A[0]=255&h;A[1]=h>>>8&255;U.check=H(U.check,A,2,0));h=0;d=0;U.mode=16182;case 16182:for(;d<32;){if(0===o)break t;o--;h+=i[s++]<<d;d+=8}U.head&&(U.head.time=h);512&U.flags&&4&U.wrap&&(A[0]=255&h;A[1]=h>>>8&255;A[2]=h>>>16&255;A[3]=h>>>24&255;U.check=H(U.check,A,4,0));h=0;d=0;U.mode=16183;case 16183:for(;d<16;){if(0===o)break t;o--;h+=i[s++]<<d;d+=8}U.head&&(U.head.xflags=255&h;U.head.os=h>>8);512&U.flags&&4&U.wrap&&(A[0]=255&h;A[1]=h>>>8&255;U.check=H(U.check,A,2,0));h=0;d=0;U.mode=16184;case 16184:if(1024&U.flags){for(;d<16;){if(0===o)break t;o--;h+=i[s++]<<d;d+=8}U.length=h;U.head&&(U.head.extra_len=h);512&U.flags&&4&U.wrap&&(A[0]=255&h;A[1]=h>>>8&255;U.check=H(U.check,A,2,0));h=0;d=0}else U.head&&(U.head.extra=null);U.mode=16185;case 16185:if(1024&U.flags){let e=U.length;e>o&&(e=o);if(e){U.head&&(y=U.head.extra_len-U.length,U.head.extra||(U.head.extra=new Uint8Array(U.head.extra_len)),U.head.extra.set(i.subarray(s,s+e),y));512&U.flags&&4&U.wrap&&(U.check=H(U.check,i,e,s));o-=e;s+=e;U.length-=e}if(U.length)break t}U.mode=16186;case 16186:if(2048&U.flags){if(0===o)break t;let e=0;do{y=i[s+e++];U.head&&y&&U.length<65536&&(U.head.name+=String.fromCharCode(y))}while(y&&e<o);512&U.flags&&4&U.wrap&&(U.check=H(U.check,i,e,s));o-=e;s+=e;if(y)break t}else U.head&&(U.head.name=null);U.length=0;U.mode=16187;case 16187:if(4096&U.flags){if(0===o)break t;let e=0;do{y=i[s+e++];U.head&&y&&U.length<65536&&(U.head.comment+=String.fromCharCode(y))}while(y&&e<o);512&U.flags&&4&U.wrap&&(U.check=H(U.check,i,e,s));o-=e;s+=e;if(y)break t}else U.head&&(U.head.comment=null);U.mode=16188;case 16188:if(512&U.flags){for(;d<16;){if(0===o)break t;o--;h+=i[s++]<<d;d+=8}if(4&U.wrap&&h!==(65535&U.check)){t.msg="header crc mismatch";U.mode=16209;break}h=0;d=0}U.head&&(U.head.hcrc=U.flags>>9&1;U.head.done=!0);t.adler=U.check=0;U.mode=16190;case 16190:if(0===U.havedict)return t.next_out=r,t.avail_out=l,t.next_in=s,t.avail_in=o,U.hold=h,U.bits=d,K.Z_NEED_DICT;t.adler=U.check=1;U.mode=16191;case 16191:if(e===K.Z_BLOCK||e===K.Z_TREES)break t;case 16193:if(U.last){h>>>=7&d;d-=7&d;U.mode=16206;break}for(;d<3;){if(0===o)break t;o--;h+=i[s++]<<d;d+=8}U.last=1&h;h>>>=1;d-=1;switch(3&h){case 0:U.mode=16194;break;case 1:Xe(U);U.mode=16199;if(e===K.Z_TREES){h>>>=2;d-=2;break t}break;case 2:U.mode=16197;break;case 3:t.msg="invalid block type";U.mode=16209}h>>>=2;d-=2;break;case 16194:h>>>=7&d;d-=7&d;for(;d<32;){if(0===o)break t;o--;h+=i[s++]<<d;d+=8}if((65535&h)!=(h>>>16^65535)){t.msg="invalid stored block lengths";U.mode=16209;break}U.length=65535&h;h=0;d=0;U.mode=16195;if(e===K.Z_TREES)break t;case 16195:U.mode=16196;case 16196:let e2=U.length;if(e2){if(e2>o&&(e2=o);e2>l&&(e2=l);0===e2)break t;n.set(i.subarray(s,s+e2),r);o-=e2;s+=e2;l-=e2;r+=e2;U.length-=e2;break}U.mode=16191;break;case 16197:for(;d<14;){if(0===o)break t;o--;h+=i[s++]<<d;d+=8}U.nlen=257+(31&h);h>>>=5;d-=5;U.ndist=1+(31&h);h>>>=5;d-=5;U.ncode=4+(15&h);h>>>=4;d-=4;if(U.nlen>286||U.ndist>30){t.msg="too many length or distance symbols";U.mode=16209;break}U.have=0;U.mode=16198;case 16198:while(U.have<U.ncode){for(;d<3;){if(0===o)break t;o--;h+=i[s++]<<d;d+=8}U.lens[Z[U.have++]]=7&h;h>>>=3;d-=3}while(U.have<19)U.lens[Z[U.have++]]=0;U.lencode=U.lendyn;U.lenbits=7;E={bits:U.lenbits};x=me(0,U.lens,0,19,U.lencode,0,U.work,E);U.lenbits=E.bits;if(x){t.msg="invalid code lengths set";U.mode=16209;break}U.have=0;U.mode=16199;case 16199:while(U.have<U.nlen+U.ndist){for(;;){g=U.lencode[h&((1<<U.lenbits)-1)];p=g>>>24;k=g>>>16&255;b=65535&g;if(p<=d)break;if(0===o)break t;o--;h+=i[s++]<<d;d+=8}if(b<16){h>>>=p;d-=p;U.lens[U.have++]=b}else{if(16===b){for(R=p+2;d<R;){if(0===o)break t;o--;h+=i[s++]<<d;d+=8}h>>>=p;d-=p;if(0===U.have){t.msg="invalid bit length repeat";U.mode=16209;break}y=U.lens[U.have-1];c=3+(3&h);h>>>=2;d-=2}else if(17===b){for(R=p+3;d<R;){if(0===o)break t;o--;h+=i[s++]<<d;d+=8}h>>>=p;d-=p;y=0;c=3+(7&h);h>>>=3;d-=3}else{for(R=p+7;d<R;){if(0===o)break t;o--;h+=i[s++]<<d;d+=8}h>>>=p;d-=p;y=0;c=11+(127&h);h>>>=7;d-=7}while(c--)U.lens[U.have++]=y}if(U.mode===16209)break;if(0===U.lens[256]){t.msg="invalid code -- missing end-of-block";U.mode=16209;break}U.lenbits=9;E={bits:U.lenbits};x=me(1,U.lens,0,U.nlen,U.lencode,0,U.work,E);U.lenbits=E.bits;if(x){t.msg="invalid literal/lengths set";U.mode=16209;break}U.distbits=6;U.distcode=U.distdyn;E={bits:U.distbits};x=me(2,U.lens,U.nlen,U.ndist,U.distcode,0,U.work,E);U.distbits=E.bits;if(x){t.msg="invalid distances set";U.mode=16209;break}U.mode=16199;if(e===K.Z_TREES)break t;case 16199:U.mode=16200;case 16200:if(o>=6&&l>=258){t.next_out=r;t.avail_out=l;t.next_in=s;t.avail_in=o;U.hold=h;U.bits=d;de(t,_);r=t.next_out;n=t.output;l=t.avail_out;s=t.next_in;i=t.input;o=t.avail_in;h=U.hold;d=U.bits;U.mode===16191&&(U.back=-1);break}U.back=0;for(;;){g=U.lencode[h&((1<<U.lenbits)-1)];p=g>>>24;k=g>>>16&255;b=65535&g;if(p<=d)break;if(0===o)break t;o--;h+=i[s++]<<d;d+=8}if(k&&0==(240&k)){let t2=p,e2=k,a2=b;for(;;){g=U.lencode[a2+((h&((1<<(t2+e2))-1))>>t2)];p=g>>>24;k=g>>>16&255;b=65535&g;if(t2+p<=d)break;if(0===o)break t;o--;h+=i[s++]<<d;d+=8}h>>>=t2;d-=t2;U.back+=t2}h>>>=p;d-=p;U.back+=p;U.length=b;if(0===k){U.mode=16205;break}if(32&k){U.back=-1;U.mode=16191;break}if(64&k){t.msg="invalid literal/length code";U.mode=16209;break}U.extra=15&k;U.mode=16201;case 16201:if(U.extra){for(R=U.extra;d<R;){if(0===o)break t;o--;h+=i[s++]<<d;d+=8}U.length+=h&((1<<U.extra)-1);h>>>=U.extra;d-=U.extra;U.back+=U.extra}U.was=U.length;U.mode=16202;case 16202:for(;;){g=U.distcode[h&((1<<U.distbits)-1)];p=g>>>24;k=g>>>16&255;b=65535&g;if(p<=d)break;if(0===o)break t;o--;h+=i[s++]<<d;d+=8}if(0==(240&k)){let t3=p,e3=k,a3=b;for(;;){g=U.distcode[a3+((h&((1<<(t3+e3))-1))>>t3)];p=g>>>24;k=g>>>16&255;b=65535&g;if(t3+p<=d)break;if(0===o)break t;o--;h+=i[s++]<<d;d+=8}h>>>=t3;d-=t3;U.back+=t3}h>>>=p;d-=p;U.back+=p;if(64&k){t.msg="invalid distance code";U.mode=16209;break}U.offset=b;U.extra=15&k;U.mode=16203;case 16203:if(U.extra){for(R=U.extra;d<R;){if(0===o)break t;o--;h+=i[s++]<<d;d+=8}U.offset+=h&((1<<U.extra)-1);h>>>=U.extra;d-=U.extra;U.back+=U.extra}if(U.offset>U.dmax){t.msg="invalid distance too far back";U.mode=16209;break}U.mode=16204;case 16204:if(0===l)break t;let e4=f-l;if(U.offset>e4){if(e4=U.offset-e4,e4>U.whave&&U.sane){t.msg="invalid distance too far back";U.mode=16209;break}let a4;e4>U.wnext?(e4-=U.wnext,a4=U.wsize-e4):a4=U.wnext-e4;e4>U.length&&(e4=U.length);let s2=U.window}else a4=n,s2=r-U.offset,e4=U.length;e4>l&&(e4=l);l-=e4;U.length-=e4;do{n[r++]=s2[a4++]}while(--e4);0===U.length&&(U.mode=16200);break;case 16205:if(0===l)break t;n[r++]=U.length;l--;U.mode=16200;break;case 16206:if(U.wrap){for(;d<32;){if(0===o)break t;o--;h|=i[s++]<<d;d+=8}_-=l;f-=l;t.total_out+=f;U.total+=f;4&U.wrap&&f&&(t.adler=U.check=U.flags?H(U.check,n,f,r-f):C(U.check,n,f,r-f));f=l;4&U.wrap&&(U.flags?h:Ne(h))!==U.check&&(t.msg="incorrect data check";U.mode=16209);h=0;d=0}U.mode=16207;case 16207:if(U.wrap&&U.flags){for(;d<32;){if(0===o)break t;o--;h+=i[s++]<<d;d+=8}if(4&U.wrap&&h!==(4294967295&U.total)){t.msg="incorrect length check";U.mode=16209}h=0;d=0}U.mode=16208;case 16208:x=K.Z_STREAM_END;break t;case 16209:x=K.Z_DATA_ERROR;break t;case 16210:return K.Z_MEM_ERROR;default:return K.Z_STREAM_ERROR}return t.next_out=r,t.avail_out=l;t.next_in=s;t.avail_in=o;U.hold=h;U.bits=d;(U.wsize||f!==t.avail_out&&U.mode<16209&&(U.mode<16206||e!==K.Z_FINISH))&&We(t,t.output,t.next_out,f-t.avail_out);_-=t.avail_in;f-=t.avail_out;t.total_in+=_;t.total_out+=f;U.total+=f;4&U.wrap&&f&&(t.adler=U.check=U.flags?H(U.check,n,f,t.next_out-f):C(U.check,n,f,t.next_out-f));t.data_type=U.bits+(U.last?64:0)+(U.mode===16191?128:0)+(U.mode===16199||U.mode===16195?256:0);(0===_&&0===f||e===K.Z_FINISH)&&x===K.Z_OK&&(x=K.Z_BUF_ERROR);x},inflateEnd:t=>{if(Ce(t))return K.Z_STREAM_ERROR;let e=t.state;e.window&&(e.window=null);t.state=null;K.Z_OK}};function Je(){this.text=0;this.time=0;this.xflags=0;this.os=0;this.extra=null;this.extra_len=0;this.name="";this.comment="";this.hcrc=0;this.done=!1}function ra(t){this.options={chunkSize:65536,windowBits:15,to:""};Object.assign(this.options,t||{});const e=this.options;e.raw&&e.windowBits>=0&&e.windowBits<16&&(e.windowBits=-e.windowBits,0===e.windowBits&&(e.windowBits=-15));!(e.windowBits>=0&&e.windowBits<16)||t&&t.windowBits||(e.windowBits+=32);e.windowBits>15&&e.windowBits<48&&0==(15&e.windowBits)&&(e.windowBits|=15);this.err=0;this.msg="";this.ended=!1;this.chunks=[];this.strm=new qt;this.strm.avail_out=0;let a=qe.inflateInit2(this.strm,e.windowBits);if(a!==K.Z_OK)throw new Error(j[a]);this.header=new Je;qe.inflateGetHeader(this.strm,this.header)}function oa(t,e){const a=new ra(e);a.push(t);if(a.err)throw a.msg||j[a.err];return a.result}ra.prototype.push=function(t,e){const a=this.strm,i=this.options.chunkSize,n=this.options.dictionary;let s,r,o;if(this.ended)return!1;for(r=e===~~e?e:!0===e?K.Z_FINISH:K.Z_NO_FLUSH,"[object ArrayBuffer]"===Object.prototype.toString.call(t)?a.input=new Uint8Array(t):a.input=t,a.next_in=0,a.avail_in=a.input.length;;){for(0===a.avail_out&&(a.output=new Uint8Array(i),a.next_out=0,a.avail_out=i),s=qe.inflate(a,r),s===K.Z_NEED_DICT&&n&&(s=qe.inflateSetDictionary(a,n),s===K.Z_OK?s=qe.inflate(a,r):s===K.Z_DATA_ERROR&&(s=K.Z_NEED_DICT));a.avail_in>0&&s===K.Z_STREAM_END&&a.state.wrap>0&&0!==t[a.next_in];)qe.inflateReset(a),s=qe.inflate(a,r);switch(s){case K.Z_STREAM_ERROR:case K.Z_DATA_ERROR:case K.Z_NEED_DICT:case K.Z_MEM_ERROR:return this.onEnd(s),this.ended=!1,!1}if(o=a.avail_out,a.next_out&&(0===a.avail_out||s===K.Z_STREAM_END))if("string"===this.options.to){let t=Wt(a.output,a.next_out),e=a.next_out-t,n=Xt(a.output,t);a.next_out=e;a.avail_out=i-e;e&&a.output.set(a.output.subarray(t,t+e),0);this.onData(n)}else this.onData(a.output.length===a.next_out?a.output:a.output.subarray(0,a.next_out));if(s!==K.Z_OK||0!==o){if(s===K.Z_STREAM_END)return s=qe.inflateEnd(this.strm),this.onEnd(s),this.ended=!0,!0;if(0===a.avail_in)break}}return!0};ra.prototype.onData=function(t){this.chunks.push(t)};ra.prototype.onEnd=function(t){t===K.Z_OK&&("string"===this.options.to?this.result=this.chunks.join(""):this.result=(t2=>{let e=0;for(let a=0,i=t2.length;a<i;a++)e+=t2[a].length;const a=new Uint8Array(e);for(let e=0,i=0,n=t2.length;e<n;e++){let n=t2[e];a.set(n,i);i+=n.length}return a})(this.chunks));this.chunks=[];this.err=t;this.msg=this.strm.msg};const Wt=(t,e)=>{if(e<1)return"";let a;const i=new Array(2*e);let n=0;for(let s=0;s<e;){let e=t[s++];if(e<128){i[n++]=e;continue}const r=((t=>{let e=0;for(let a=0,i=t.length;a<i;a++)e+=t[a].length;const a=new Uint8Array(e);for(let e=0,i=0,n=t.length;e<n;e++){let n=t[e];a.set(n,i);i+=n.length}return a})(t)).length>2*e?2:e;if(2===r){e=(31&e)<<6|(63&t[s++])}else{e=(15&e)<<12|(63&t[s++])<<6|63&t[s++]}i[n++]=e}return String.fromCharCode.apply(null,i.subarray(0,n))};
+const la={inflate:oa,ungzip:oa,constants:K};
+t.inflate=oa;t.ungzip=oa;t.constants=K;Object.defineProperty(t,"__esModule",{value:!0})}));
 </script>
-<!-- pako库 - BLF解压必需 -->
-<script src="https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js"></script>
 <style>
-/* ============================================================
- * CAN Mac Analyzer - 全局样式 (CANoe风格 + macOS适配)
- * ⚠️ 任何样式改动都必须同步更新版本号和日期时间
- * ============================================================ */
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{
-  --sidebar-w:280px;--toolbar-h:44px;--statusbar-h:28px;--titlebar-h:38px;
-  --accent:#007AFF;--accent-hover:#0056CC;
-  --bg-primary:#1E1E1E;--bg-secondary:#252526;--bg-tertiary:#2D2D30;--bg-sidebar:#1B1B1D;
-  --text-primary:#CCCCCC;--text-secondary:#808080;--text-accent:#4FC1FF;
-  --border:#3E3E42;--success:#4EC9B0;--warning:#D7BA7D;--error:#F44747;
-  --row-hover:rgba(255,255,255,0.04);--row-selected:rgba(0,122,255,0.15);
-  --scrollbar:#424242;--scrollbar-hover:#555;
+  --safe-top:env(safe-area-inset-top,0px);--safe-bottom:env(safe-area-inset-bottom,0px);
+  --mac-traffic:#ff5f57,#febc2e,#28c840;
+  --bg-primary:#1e1e1e;--bg-secondary:#252526;--bg-tertiary:#2d2d30;
+  --bg-hover:#383838;--bg-active:#094771;
+  --border:#3c3c3c;--border-light:#4e4e4e;
+  --text-primary:#cccccc;--text-secondary:#969696;--text-muted:#666;
+  --accent:#007aff;--accent-hover:#0066d6;
+  --green:#34c759;--red:#ff3b30;--orange:#ff9500;--cyan:#5ac8fa;
 }
-html,body{height:100%;overflow:hidden;background:var(--bg-primary);color:var(--text-primary);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Helvetica Neue',sans-serif;font-size:13px;-webkit-font-smoothing:antialiased}
+html,body{height:100%;overflow:hidden;background:var(--bg-primary);color:var(--text-primary);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Mono','Menlo',monospace;-webkit-text-size-adjust:100%}
 body{display:flex;flex-direction:column}
+/* Mac title bar */
+.mac-titlebar{background:linear-gradient(180deg,#333,#2a2a2a);height:38px;display:flex;align-items:center;padding:0 12px;-webkit-app-region:drag;border-bottom:1px solid #222;flex-shrink:0;position:relative;z-index:100}
+.traffic-lights{display:flex;gap:7px;margin-right:14px}
+.tl-btn{width:12px;height:12px;border-radius:50%;border:none;cursor:pointer;-webkit-app-region:no-drag}
+.tl-close{background:#ff5f57}.tl-minimize{background:#febc2e}.tl-maximize{background:#28c840}
+.tl-close:hover{background:#ff3b30}.tl-minimize:hover{background:#e5a820}.tl-maximize:hover{background:#1eae35}
+.title-text{flex:1;text-align:center;font-size:13px;color:#aaa;font-weight:500;letter-spacing:.3px}
+.title-right{width:70px}
+/* Toolbar */
+.toolbar{background:var(--bg-secondary);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:4px 8px;gap:4px;flex-shrink:0}
+.tb-btn{padding:5px 12px;border-radius:6px;border:1px solid var(--border);background:var(--bg-tertiary);color:var(--text-primary);font-size:12px;cursor:pointer;transition:all .15s;font-family:inherit;display:flex;align-items:center;gap:5px}
+.tb-btn:hover{background:var(--bg-hover)}.tb-btn:active{background:var(--bg-active);color:#fff}
+.tb-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.tb-btn.primary:hover{background:var(--accent-hover)}
+.tb-sep{width:1px;height:20px;background:var(--border);margin:0 4px}
+.tb-info{margin-left:auto;font-size:11px;color:var(--text-muted);display:flex;gap:12px}
+.tb-info span{white-space:nowrap}
+.tb-info b{color:var(--text-secondary)}
+/* Main layout */
+.main{flex:1;display:flex;overflow:hidden}
+/* Left panel - message list */
+.left-panel{width:280px;border-right:1px solid var(--border);display:flex;flex-direction:column;background:var(--bg-secondary);flex-shrink:0}
+.panel-header{padding:8px 10px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:6px}
+.panel-title{font-size:12px;font-weight:600;color:var(--text-primary);flex:1}
+.search-box{padding:6px 10px;border-bottom:1px solid var(--border)}
+.search-input{width:100%;padding:5px 8px;border-radius:5px;border:1px solid var(--border);background:var(--bg-tertiary);color:var(--text-primary);font-size:12px;outline:none;font-family:inherit}
+.search-input:focus{border-color:var(--accent)}
+.msg-list{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.msg-item{display:flex;align-items:center;padding:5px 10px;cursor:pointer;border-bottom:1px solid #2a2a2a;transition:background .1s;gap:8px}
+.msg-item:hover{background:var(--bg-hover)}
+.msg-item.active{background:var(--bg-active)}
+.msg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.msg-id{font-size:12px;color:var(--cyan);font-weight:600;font-family:'SF Mono',Menlo,monospace;min-width:70px}
+.msg-name{font-size:11px;color:var(--text-secondary);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.msg-cnt{font-size:10px;color:var(--text-muted);flex-shrink:0}
+/* Right panel - main view */
+.right-panel{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.view-tabs{display:flex;background:var(--bg-secondary);border-bottom:1px solid var(--border);flex-shrink:0}
+.view-tab{padding:7px 16px;font-size:12px;color:var(--text-muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s}
+.view-tab:hover{color:var(--text-primary)}
+.view-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.view-content{flex:1;overflow:hidden;position:relative}
+/* Waveform view */
+.wave-container{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch}
+.wave-row{border-bottom:1px solid #2a2a2a;position:relative}
+.wave-header{display:flex;align-items:center;padding:4px 10px;background:var(--bg-secondary);gap:6px;height:28px}
+.wave-label{font-size:11px;color:var(--text-primary);font-weight:500}
+.wave-value{font-size:11px;color:var(--cyan);font-family:'SF Mono',Menlo,monospace;margin-left:auto}
+.wave-canvas-wrap{position:relative;height:120px;background:#0a0a0a}
+.wave-canvas-wrap canvas{width:100%;height:100%;display:block}
+/* Data view */
+.data-container{position:absolute;inset:0;overflow:auto;-webkit-overflow-scrolling:touch;padding:8px}
+.data-table{width:100%;border-collapse:collapse;font-size:11px}
+.data-table th{background:var(--bg-tertiary);padding:6px 10px;text-align:left;color:var(--text-muted);font-size:10px;text-transform:uppercase;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:2}
+.data-table td{padding:5px 10px;border-bottom:1px solid #2a2a2a;font-family:'SF Mono',Menlo,monospace}
+.data-table tr:hover td{background:var(--bg-hover)}
+/* Protocol view */
+.proto-container{position:absolute;inset:0;overflow:auto;-webkit-overflow-scrolling:touch;padding:8px}
+.proto-card{background:var(--bg-secondary);border:1px solid var(--border);border-radius:8px;margin-bottom:8px;overflow:hidden}
+.proto-hdr{padding:8px 12px;background:var(--bg-tertiary);display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border)}
+.proto-id{color:var(--cyan);font-weight:700;font-size:13px;font-family:'SF Mono',Menlo,monospace}
+.proto-name{color:var(--text-secondary);font-size:12px}
+.proto-table{width:100%;border-collapse:collapse;font-size:11px}
+.proto-table th{background:var(--bg-tertiary);padding:5px 8px;text-align:left;color:var(--text-muted);font-size:9px;text-transform:uppercase;border-bottom:1px solid var(--border)}
+.proto-table td{padding:4px 8px;border-bottom:1px solid #2a2a2a}
+/* Signal panel */
+.sig-panel{border-top:1px solid var(--border);background:var(--bg-secondary);max-height:200px;overflow-y:auto;flex-shrink:0}
+.sig-item{display:flex;align-items:center;padding:3px 10px;gap:6px;cursor:pointer;font-size:11px;border-bottom:1px solid #2a2a2a}
+.sig-item:hover{background:var(--bg-hover)}
+.sig-item.selected{background:var(--bg-active)}
+.sig-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.sig-name{color:var(--text-primary);flex:1}
+.sig-val{color:var(--cyan);font-family:'SF Mono',Menlo,monospace;font-size:11px}
+/* Status bar */
+.statusbar{background:var(--bg-secondary);border-top:1px solid var(--border);padding:3px 12px;display:flex;gap:16px;font-size:11px;color:var(--text-muted);flex-shrink:0}
+.statusbar b{color:var(--text-secondary)}
+/* Drop overlay */
+.drop-overlay{position:fixed;inset:0;background:rgba(0,122,255,.15);border:3px dashed var(--accent);z-index:200;display:none;align-items:center;justify-content:center;pointer-events:none}
+.drop-overlay.show{display:flex}
+.drop-overlay .drop-text{background:var(--bg-primary);padding:20px 40px;border-radius:12px;font-size:18px;color:var(--accent);font-weight:600}
+/* Empty state */
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--text-muted);gap:8px}
+.empty-icon{font-size:48px;opacity:.3}
+.empty-text{font-size:14px}
+.empty-hint{font-size:12px;color:#555}
+/* File list in toolbar */
+.file-chips{display:flex;gap:4px;flex-wrap:wrap;max-width:400px}
+.file-chip{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:4px;background:var(--bg-tertiary);border:1px solid var(--border);font-size:10px;color:var(--text-secondary)}
+.file-chip .fc-del{cursor:pointer;color:var(--red);font-weight:700}
+/* Hidden file inputs */
+.hidden{display:none}
+/* Scrollbar */
 ::-webkit-scrollbar{width:8px;height:8px}
 ::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:var(--scrollbar);border-radius:4px}
-::-webkit-scrollbar-thumb:hover{background:var(--scrollbar-hover)}
-.titlebar{height:var(--titlebar-h);background:linear-gradient(180deg,#3C3C3C 0%,#333333 100%);display:flex;align-items:center;padding:0 12px;border-bottom:1px solid #222;-webkit-app-region:drag;flex-shrink:0}
-.traffic-lights{display:flex;gap:8px;margin-right:16px;-webkit-app-region:no-drag}
-.tl-btn{width:12px;height:12px;border-radius:50%;border:none;cursor:pointer;position:relative}
-.tl-close{background:#FF5F57}.tl-minimize{background:#FEBC2E}.tl-maximize{background:#28C840}
-.tl-btn:hover::after{content:'';position:absolute;inset:0;border-radius:50%;background:rgba(0,0,0,0.15)}
-.titlebar-text{flex:1;text-align:center;font-size:13px;font-weight:500;color:#999;letter-spacing:0.3px;user-select:none}
-.titlebar-version{font-size:10px;color:#666;margin-left:8px}
-.toolbar{height:var(--toolbar-h);background:var(--bg-secondary);display:flex;align-items:center;padding:0 12px;gap:6px;border-bottom:1px solid var(--border);flex-shrink:0}
-.tb-btn{height:30px;padding:0 12px;border-radius:6px;border:1px solid var(--border);background:var(--bg-tertiary);color:var(--text-primary);font-size:12px;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all 0.15s;white-space:nowrap}
-.tb-btn:hover{background:#3E3E42;border-color:#555}
-.tb-btn:active{background:#333;transform:scale(0.97)}
-.tb-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:500}
-.tb-btn.primary:hover{background:var(--accent-hover)}
-.tb-sep{width:1px;height:24px;background:var(--border);margin:0 4px;flex-shrink:0}
-.tb-info{margin-left:auto;font-size:11px;color:var(--text-secondary);display:flex;gap:12px}
-.tb-info span{display:flex;align-items:center;gap:4px}
-.tb-info b{color:var(--text-accent);font-weight:600}
-.main-container{flex:1;display:flex;overflow:hidden}
-.sidebar{width:var(--sidebar-w);background:var(--bg-sidebar);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0}
-.sidebar-header{padding:8px 10px;border-bottom:1px solid var(--border)}
-.sidebar-search{width:100%;height:28px;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:6px;padding:0 8px;color:var(--text-primary);font-size:12px;outline:none}
-.sidebar-search:focus{border-color:var(--accent)}
-.sidebar-search::placeholder{color:#555}
-.sidebar-tabs{display:flex;border-bottom:1px solid var(--border)}
-.sidebar-tab{flex:1;padding:8px 0;text-align:center;font-size:11px;color:var(--text-secondary);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s}
-.sidebar-tab.active{color:var(--text-accent);border-bottom-color:var(--accent)}
-.sidebar-content{flex:1;overflow-y:auto;padding:4px 0}
-.msg-item{display:flex;align-items:center;padding:6px 10px;cursor:pointer;border-left:3px solid transparent;transition:all 0.1s;gap:8px}
-.msg-item:hover{background:var(--row-hover)}
-.msg-item.active{background:var(--row-selected);border-left-color:var(--accent)}
-.msg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.msg-info{flex:1;min-width:0}
-.msg-id{font-size:12px;font-weight:600;color:var(--text-accent);font-family:'SF Mono','Menlo',monospace}
-.msg-name{font-size:10px;color:var(--text-secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.msg-meta{font-size:10px;color:#555;flex-shrink:0;text-align:right}
-.msg-meta b{color:#888}
-.sig-item{display:flex;align-items:center;padding:5px 10px 5px 20px;cursor:pointer;gap:6px;transition:all 0.1s}
-.sig-item:hover{background:var(--row-hover)}
-.sig-item.active{background:var(--row-selected)}
-.sig-color{width:6px;height:6px;border-radius:50%;flex-shrink:0}
-.sig-name{flex:1;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.sig-val{font-size:11px;font-family:'SF Mono','Menlo',monospace;color:var(--text-accent);flex-shrink:0}
-.main-view{flex:1;display:flex;flex-direction:column;overflow:hidden}
-.view-tabs{display:flex;background:var(--bg-secondary);border-bottom:1px solid var(--border);padding:0 8px;flex-shrink:0}
-.view-tab{padding:8px 16px;font-size:12px;color:var(--text-secondary);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s}
-.view-tab.active{color:var(--text-accent);border-bottom-color:var(--accent)}
-.view-content{flex:1;overflow:hidden;position:relative}
-.view-panel{display:none;flex-direction:column;height:100%}
-.view-panel.active{display:flex}
-.chart-area{flex:1;overflow-y:auto;overflow-x:hidden;background:#1A1A1A;padding:8px}
-.chart-container{border:1px solid var(--border);border-radius:6px;margin-bottom:8px;overflow:hidden;background:var(--bg-secondary)}
-.chart-header{display:flex;align-items:center;padding:6px 10px;background:var(--bg-tertiary);border-bottom:1px solid var(--border);gap:6px}
-.chart-title{font-size:11px;font-weight:600}
-.chart-value{font-size:11px;color:#D4D4D4;font-family:'SF Mono','Menlo',monospace;margin-left:auto}
-.chart-canvas-wrap{position:relative;height:120px}
-.chart-canvas-wrap canvas{width:100%;height:100%;display:block}
-.data-table-wrap{flex:1;overflow:auto;padding:8px}
-.data-table{width:100%;border-collapse:collapse;font-size:12px}
-.data-table th{background:var(--bg-tertiary);padding:6px 10px;text-align:left;color:var(--text-secondary);font-size:10px;text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:1}
-.data-table td{padding:5px 10px;border-bottom:1px solid rgba(255,255,255,0.03);font-family:'SF Mono','Menlo',monospace;font-size:11px}
-.data-table tr:hover td{background:var(--row-hover)}
-.hex-val{color:#CE9178}.id-val{color:var(--text-accent);font-weight:600}.time-val{color:#B5CEA8}.sig-val-cell{color:#D7BA7D}
-.proto-view{flex:1;overflow-y:auto;padding:12px}
-.proto-card{background:var(--bg-secondary);border:1px solid var(--border);border-radius:8px;margin-bottom:8px;overflow:hidden}
-.proto-card-hdr{display:flex;align-items:center;padding:8px 12px;background:var(--bg-tertiary);border-bottom:1px solid var(--border);gap:8px}
-.proto-card-id{font-size:13px;font-weight:700;color:var(--text-accent);font-family:'SF Mono','Menlo',monospace}
-.proto-card-name{font-size:12px;color:var(--text-primary);flex:1}
-.proto-card-meta{font-size:10px;color:var(--text-secondary)}
-.proto-sig-table{width:100%;border-collapse:collapse;font-size:11px}
-.proto-sig-table th{padding:5px 8px;text-align:left;color:var(--text-secondary);font-size:9px;text-transform:uppercase;border-bottom:1px solid var(--border);background:var(--bg-tertiary)}
-.proto-sig-table td{padding:4px 8px;border-bottom:1px solid rgba(255,255,255,0.02)}
-.statusbar{height:var(--statusbar-h);background:var(--bg-secondary);border-top:1px solid var(--border);display:flex;align-items:center;padding:0 12px;gap:16px;flex-shrink:0;font-size:11px;color:var(--text-secondary)}
-.statusbar .version-info{margin-left:auto;display:flex;align-items:center;gap:8px}
-.statusbar .ver{color:var(--text-accent);font-weight:500}
-.statusbar .date{color:#666}
-.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:#555;gap:8px;padding:40px}
-.empty-state .es-icon{font-size:48px;opacity:0.3}
-.empty-state .es-text{font-size:13px}
-.empty-state .es-hint{font-size:11px;color:#444}
-.drop-overlay{position:fixed;inset:0;background:rgba(0,122,255,0.1);border:3px dashed var(--accent);z-index:1000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
-.drop-overlay.show{display:flex}
-.drop-overlay .drop-text{font-size:20px;color:var(--accent);font-weight:600;background:var(--bg-primary);padding:20px 40px;border-radius:12px}
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:500;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+::-webkit-scrollbar-thumb{background:#555;border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:#777}
+/* Hex data */
+.hex-grid{display:flex;flex-wrap:wrap;gap:4px;padding:8px}
+.hex-byte{text-align:center;min-width:40px;padding:3px;border-radius:4px;background:var(--bg-tertiary)}
+.hex-byte .ix{font-size:8px;color:#555}
+.hex-byte .vl{font-size:13px;color:var(--orange);font-weight:700}
+/* Signal selector modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:150;display:none;align-items:center;justify-content:center}
 .modal-overlay.show{display:flex}
-.modal-box{background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;padding:20px;min-width:360px;max-width:90vw;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
-.modal-title{font-size:16px;font-weight:600;color:var(--text-primary);margin-bottom:16px}
-.modal-body{margin-bottom:16px;color:var(--text-primary);line-height:1.6}
-.modal-btns{display:flex;gap:8px;justify-content:flex-end}
-.modal-btn{padding:8px 20px;border-radius:6px;border:1px solid var(--border);background:var(--bg-tertiary);color:var(--text-primary);font-size:12px;cursor:pointer}
-.modal-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.modal{background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;width:500px;max-height:80vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.modal-hdr{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center}
+.modal-title{font-size:14px;font-weight:600;flex:1}
+.modal-close{width:24px;height:24px;border-radius:6px;border:none;background:var(--bg-tertiary);color:var(--text-secondary);cursor:pointer;font-size:14px}
+.modal-body{flex:1;overflow-y:auto;padding:8px}
+.modal-sig{display:flex;align-items:center;padding:6px 10px;cursor:pointer;border-radius:6px;gap:8px}
+.modal-sig:hover{background:var(--bg-hover)}
+.modal-sig.active{background:var(--bg-active)}
+.modal-sig .ms-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.modal-sig .ms-name{font-size:12px;flex:1}
+.modal-sig .ms-unit{font-size:10px;color:var(--text-muted)}
+/* Legend */
+.legend-bar{display:flex;gap:4px;padding:4px 10px;background:var(--bg-secondary);border-bottom:1px solid var(--border);flex-wrap:wrap;min-height:28px;align-items:center}
+.legend-item{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:4px;font-size:10px;cursor:pointer;border:1px solid var(--border);background:var(--bg-tertiary)}
+.legend-item.hidden{opacity:.4}
+.legend-dot{width:8px;height:8px;border-radius:3px;flex-shrink:0}
+.legend-name{color:var(--text-secondary)}
+.legend-val{font-weight:600;font-family:'SF Mono',Menlo,monospace}
+@media(max-width:900px){.left-panel{width:220px}}
 </style>
 </head>
 <body>
-<div class="titlebar">
-  <div class="traffic-lights"><button class="tl-btn tl-close"></button><button class="tl-btn tl-minimize"></button><button class="tl-btn tl-maximize"></button></div>
-  <div class="titlebar-text">CAN Mac Analyzer <span class="titlebar-version" id="titleVersion"></span></div>
-</div>
-<div class="toolbar">
-  <button class="tb-btn primary" onclick="document.getElementById('fileInput').click()">📂 打开文件</button>
-  <input type="file" id="fileInput" accept=".asc,.blf,.dbc,.txt,.csv" multiple style="display:none">
-  <div class="tb-sep"></div>
-  <button class="tb-btn" id="btnParse" onclick="startParse()" disabled>▶ 解析</button>
-  <button class="tb-btn" onclick="clearAll()">🗑 清除</button>
-  <div class="tb-sep"></div>
-  <button class="tb-btn" id="btnExport" onclick="exportData()" disabled>📊 导出CSV</button>
-  <div class="tb-info"><span>帧 <b id="statFrames">0</b></span><span>ID <b id="statIDs">0</b></span><span>信号 <b id="statSignals">0</b></span><span>时长 <b id="statDuration">0s</b></span></div>
-</div>
-<div class="main-container">
-  <div class="sidebar">
-    <div class="sidebar-header"><input type="text" class="sidebar-search" id="sidebarSearch" placeholder="🔍 搜索ID或名称..." oninput="filterSidebar()"></div>
-    <div class="sidebar-tabs"><div class="sidebar-tab active" data-tab="messages" onclick="switchSidebarTab(this)">报文</div><div class="sidebar-tab" data-tab="signals" onclick="switchSidebarTab(this)">信号</div></div>
-    <div class="sidebar-content" id="sidebarContent"><div class="empty-state" style="height:200px"><div class="es-icon">📋</div><div class="es-hint">打开ASC/BLF/DBC文件开始</div></div></div>
+
+<!-- Mac Title Bar -->
+<div class="mac-titlebar">
+  <div class="traffic-lights">
+    <button class="tl-btn tl-close"></button>
+    <button class="tl-btn tl-minimize"></button>
+    <button class="tl-btn tl-maximize"></button>
   </div>
-  <div class="main-view">
+  <div class="title-text">CAN Mac Analyzer — CANoe Style</div>
+  <div class="title-right"></div>
+</div>
+
+<!-- Toolbar -->
+<div class="toolbar">
+  <button class="tb-btn" id="btnOpenDbc" onclick="pickFile('dbc')">📂 DBC</button>
+  <button class="tb-btn" id="btnOpenAsc" onclick="pickFile('asc')">📂 ASC/BLF</button>
+  <div class="tb-sep"></div>
+  <button class="tb-btn primary" id="btnParse" onclick="parseAll()">▶ 解析</button>
+  <div class="tb-sep"></div>
+  <div class="file-chips" id="fileChips"></div>
+  <div class="tb-info">
+    <span>帧 <b id="statFrames">0</b></span>
+    <span>ID <b id="statIds">0</b></span>
+    <span>信号 <b id="statSigs">0</b></span>
+    <span>时长 <b id="statDur">-</b></span>
+  </div>
+</div>
+
+<!-- Main -->
+<div class="main">
+  <!-- Left Panel -->
+  <div class="left-panel">
+    <div class="panel-header">
+      <span class="panel-title">📨 报文列表</span>
+      <span style="font-size:10px;color:var(--text-muted)" id="idCount">0 IDs</span>
+    </div>
+    <div class="search-box">
+      <input class="search-input" id="idSearch" placeholder="搜索 ID 或名称..." oninput="renderIdList()">
+    </div>
+    <div class="msg-list" id="idList"></div>
+  </div>
+
+  <!-- Right Panel -->
+  <div class="right-panel">
     <div class="view-tabs">
-      <div class="view-tab active" data-view="chart" onclick="switchView(this)">📈 波形</div>
-      <div class="view-tab" data-view="data" onclick="switchView(this)">📋 数据</div>
-      <div class="view-tab" data-view="proto" onclick="switchView(this)">📖 协议</div>
+      <div class="view-tab active" data-view="wave" onclick="switchView('wave')">📈 波形</div>
+      <div class="view-tab" data-view="data" onclick="switchView('data')">📋 数据</div>
+      <div class="view-tab" data-view="proto" onclick="switchView('proto')">📄 协议</div>
     </div>
     <div class="view-content">
-      <div class="view-panel active" id="viewChart"><div class="chart-area" id="chartArea"><div class="empty-state"><div class="es-icon">📈</div><div class="es-text">暂无波形数据</div><div class="es-hint">请先打开ASC/BLF文件和DBC文件，然后点击解析</div></div></div></div>
-      <div class="view-panel" id="viewData"><div class="data-table-wrap"><table class="data-table"><thead><tr><th>时间</th><th>通道</th><th>ID</th><th>DLC</th><th>数据</th><th>周期</th><th>信号值</th></tr></thead><tbody id="dataTableBody"></tbody></table></div></div>
-      <div class="view-panel" id="viewProto"><div class="proto-view" id="protoView"><div class="empty-state"><div class="es-icon">📖</div><div class="es-text">暂无协议定义</div><div class="es-hint">请先加载DBC文件</div></div></div></div>
+      <!-- Waveform View -->
+      <div class="wave-container" id="waveView">
+        <div class="legend-bar" id="legendBar"></div>
+        <div id="waveRows"></div>
+      </div>
+      <!-- Data View -->
+      <div class="data-container" id="dataView" style="display:none">
+        <div class="empty-state" id="dataEmpty">
+          <div class="empty-icon">📋</div>
+          <div class="empty-text">选择一个报文查看数据</div>
+        </div>
+        <div id="dataContent" style="display:none"></div>
+      </div>
+      <!-- Protocol View -->
+      <div class="proto-container" id="protoView" style="display:none">
+        <div class="empty-state" id="protoEmpty">
+          <div class="empty-icon">📄</div>
+          <div class="empty-text">导入DBC文件查看协议定义</div>
+        </div>
+        <div id="protoContent" style="display:none"></div>
+      </div>
     </div>
+    <!-- Signal panel (bottom) -->
+    <div class="sig-panel" id="sigPanel"></div>
   </div>
 </div>
+
+<!-- Status Bar -->
 <div class="statusbar">
-  <span>就绪</span><span id="statusInfo"></span>
-  <div class="version-info"><span class="ver" id="statusVersion"></span><span class="date" id="statusDate"></span></div>
+  <span>就绪</span>
+  <span style="margin-left:auto">CAN Mac Analyzer v1.0</span>
 </div>
-<div class="drop-overlay" id="dropOverlay"><div class="drop-text">📁 拖放文件到此处</div></div>
-<div class="modal-overlay" id="modalOverlay"><div class="modal-box"><div class="modal-title" id="modalTitle">提示</div><div class="modal-body" id="modalBody"></div><div class="modal-btns"><button class="modal-btn primary" onclick="closeModal()">确定</button></div></div></div>
+
+<!-- Drop Overlay -->
+<div class="drop-overlay" id="dropOverlay"><div class="drop-text">拖放 DBC / ASC / BLF 文件</div></div>
+
+<!-- Signal Selector Modal -->
+<div class="modal-overlay" id="sigModal">
+  <div class="modal">
+    <div class="modal-hdr">
+      <span class="modal-title">选择信号</span>
+      <button class="modal-close" onclick="closeSigModal()">✕</button>
+    </div>
+    <div class="modal-body" id="sigModalBody"></div>
+  </div>
+</div>
+
+<!-- Hidden file inputs -->
+<input type="file" class="hidden" id="dbcInput" accept=".dbc" multiple>
+<input type="file" class="hidden" id="ascInput" accept=".asc,.blf" multiple>
 
 <script>
-/* ============================================================
- * CAN Mac Analyzer - 核心逻辑
- * ⚠️ 任何代码改动都必须同步更新文件顶部的 VERSION 和 BUILD_DATE
- *
- * 功能清单：
- * 1. DBC文件解析（BO_ SG_ CM_ BA_DEF_ BA_ VAL_）
- * 2. ASC文件解析（支持多种时间戳格式）
- * 3. BLF文件解析（使用pako解压zlib数据块）
- * 4. 信号解码（Intel/Motorola字节序，有符号/无符号）
- * 5. 波形Canvas绘制
- * 6. 数据表格展示
- * 7. 协议定义展示
- * 8. 拖拽上传
- * 9. CSV导出
- * ============================================================ */
-
-// ==================== 全局状态 ====================
-var state = {
-    ascFiles:[], dbcFiles:[], messages:{}, dbcDefs:{}, frames:[],
-    selectedMsg:null, signalColors:{}, parsed:false, colorIndex:0
+// ========== State ==========
+var S = {
+  dbc: {}, lk: {}, msgs: [], dec: {},
+  dbcFiles: [], ascFiles: [],
+  selId: null, ok: false, idF: {}, chs: []
 };
-var COLORS = ['#4FC1FF','#FF6B6B','#4EC9B0','#D7BA7D','#C586C0','#DCDCAA','#569CD6','#CE9178','#B5CEA8','#9CDCFE','#F44747','#6A9955','#D4D4D4'];
+var AXES = []; // waveform axes
+var axColors = ['#007aff','#ff3b30','#34c759','#ff9500','#af52de','#5ac8fa','#ff2d55','#ffcc00'];
+var axId = 0;
+var currentView = 'wave';
+var dbcEnums = {};
+var builtinDbcs = {};
 
-// ==================== 版本初始化 ====================
-(function(){
-    document.getElementById('titleVersion').textContent = '(' + APP_VERSION + ')';
-    document.getElementById('statusVersion').textContent = 'CAN Mac ' + APP_VERSION;
-    document.getElementById('statusDate').textContent = BUILD_DATE;
-})();
+// ========== Utility ==========
+function $(id){ return document.getElementById(id); }
+function hex(id){ return ('00000000'+(id>>>0).toString(16)).slice(-8).toUpperCase(); }
+function d2c(id){ return id & 0x7FF; } // standard CAN ID
+function cc(n){ var cols=['#007aff','#ff3b30','#34c759','#ff9500','#af52de','#5ac8fa','#ff2d55','#ffcc00']; return cols[(n-1)%cols.length]; }
+function ac(i){ return axColors[i % axColors.length]; }
 
-// ==================== DBC 解析器 ====================
-function parseDBC(text) {
-    var defs = {}, lines = text.split('\n'), currentMsg = null, valTable = {};
-    for (var i = 0; i < lines.length; i++) {
-        var line = lines[i].trim();
-        if (!line || line.startsWith('//')) continue;
-        // BO_ ID Name: DLC Sender
-        var boMatch = line.match(/^BO_\s+(\d+)\s+(\w+)\s*:\s*(\d+)\s+(\w+)/);
-        if (boMatch) {
-            var id = parseInt(boMatch[1]);
-            if (id >= 0x80000000) id -= 0x80000000;
-            currentMsg = {id:id, name:boMatch[2], dlc:parseInt(boMatch[3]), sender:boMatch[4], signals:[]};
-            defs[id] = currentMsg;
-            continue;
+// ========== File Handling ==========
+function pickFile(type){
+  if(type==='dbc') $('dbcInput').click();
+  else $('ascInput').click();
+}
+
+$('dbcInput').addEventListener('change', function(e){
+  for(var i=0;i<e.target.files.length;i++) S.dbcFiles.push(e.target.files[i]);
+  e.target.value=''; updateFileChips();
+});
+$('ascInput').addEventListener('change', function(e){
+  for(var i=0;i<e.target.files.length;i++) S.ascFiles.push(e.target.files[i]);
+  e.target.value=''; updateFileChips();
+});
+
+function updateFileChips(){
+  var h='';
+  for(var i=0;i<S.dbcFiles.length;i++){
+    h+='<span class="file-chip">📘 '+S.dbcFiles[i].name+' <span class="fc-del" onclick="removeFile(\'dbc\','+i+')">✕</span></span>';
+  }
+  for(var i=0;i<S.ascFiles.length;i++){
+    h+='<span class="file-chip">📗 '+S.ascFiles[i].name+' <span class="fc-del" onclick="removeFile(\'asc\','+i+')">✕</span></span>';
+  }
+  $('fileChips').innerHTML = h;
+}
+
+function removeFile(type, idx){
+  if(type==='dbc') S.dbcFiles.splice(idx,1);
+  else S.ascFiles.splice(idx,1);
+  updateFileChips();
+}
+
+function readFile(f){ return new Promise(function(resolve,reject){ var r=new FileReader(); r.onload=function(){resolve(r.result)}; r.onerror=reject; r.readAsText(f); }); }
+function readBin(f){ return new Promise(function(resolve,reject){ var r=new FileReader(); r.onload=function(){resolve(r.result)}; r.onerror=reject; r.readAsArrayBuffer(f); }); }
+
+// Drag & drop
+document.addEventListener('dragover', function(e){ e.preventDefault(); $('dropOverlay').classList.add('show'); });
+document.addEventListener('dragleave', function(e){ if(e.relatedTarget===null) $('dropOverlay').classList.remove('show'); });
+document.addEventListener('drop', function(e){
+  e.preventDefault(); $('dropOverlay').classList.remove('show');
+  var files = e.dataTransfer.files;
+  for(var i=0;i<files.length;i++){
+    var f=files[i], n=f.name.toLowerCase();
+    if(n.endsWith('.dbc')) S.dbcFiles.push(f);
+    else if(n.endsWith('.asc')||n.endsWith('.blf')) S.ascFiles.push(f);
+  }
+  updateFileChips();
+});
+
+// ========== DBC Parsing ==========
+function parseDBC(content){
+  if(content.charCodeAt(0)===0xFEFF) content=content.substring(1);
+  var ls=content.split(/\r?\n/), mc=0, sc=0, cm=null;
+  dbcEnums={};
+  var valTables={};
+  for(var i=0;i<ls.length;i++){
+    var l=ls[i].trim();
+    if(l.length<3||l[0]==='/'||l[0]==='#'||l[0]===';') continue;
+    // CM_ SG_
+    if(l.indexOf('CM_ SG_')===0){
+      var cmMatch=l.match(/CM_\s+SG_\s+(\d+)\s+(\S+)\s+"([^"]*)"/);
+      if(cmMatch){
+        var cmMsgId=+cmMatch[1], cmSigName=cmMatch[2], cmText=cmMatch[3];
+        var cmMsgDef=S.dbc[cmMsgId];
+        if(cmMsgDef){
+          var cmFullName=cmMsgDef.name+'.'+cmSigName;
+          if(/[\u4e00-\u9fff]/.test(cmText)) dbcEnums[cmFullName]={values:[],unit:'',description:cmText};
         }
-        // SG_ Name : StartBit|BitLength@ByteOrder Sign (Factor,Offset) [Min|Max] "Unit" Receiver
-        var sgMatch = line.match(/^SG_\s+(\w+)\s*:\s*(\d+)\|(\d+)@([01])([+-])\s*\(([^,]+),([^)]+)\)\s*\[([^|]+)\|([^\]]+)\]\s*"([^"]*)"\s*(.*)/);
-        if (sgMatch && currentMsg) {
-            currentMsg.signals.push({
-                name:sgMatch[1], startBit:parseInt(sgMatch[2]), bitLength:parseInt(sgMatch[3]),
-                byteOrder:parseInt(sgMatch[4]), sign:sgMatch[5],
-                factor:parseFloat(sgMatch[6]), offset:parseFloat(sgMatch[7]),
-                min:parseFloat(sgMatch[8]), max:parseFloat(sgMatch[9]),
-                unit:sgMatch[10], receiver:sgMatch[11].trim()
-            });
-            continue;
-        }
-        // VAL_ MsgID SigName Val "Desc" ... ;
-        var valMatch = line.match(/^VAL_\s+(\d+)\s+(\w+)\s+(.*?)\s*;/);
-        if (valMatch) {
-            var msgId = parseInt(valMatch[1]); if(msgId>=0x80000000) msgId-=0x80000000;
-            var valPairs = valMatch[3].match(/(\d+)\s+"([^"]+)"/g);
-            if (valPairs) {
-                var vt = {};
-                for (var j=0;j<valPairs.length;j++){var pm=valPairs[j].match(/(\d+)\s+"([^"]+)"/);if(pm)vt[parseInt(pm[1])]=pm[2];}
-                if(!valTable[msgId])valTable[msgId]={}; valTable[msgId][valMatch[2]]=vt;
-            }
-            continue;
-        }
-        // CM_ BO_ ID "Comment"
-        var cmMatch = line.match(/^CM_\s+BO_\s+(\d+)\s+"([^"]*)"/);
-        if (cmMatch) {var cmId=parseInt(cmMatch[1]);if(cmId>=0x80000000)cmId-=0x80000000;if(defs[cmId])defs[cmId].comment=cmMatch[2];}
+      }
+      continue;
     }
-    for(var mid in valTable)if(defs[mid])defs[mid].valTable=valTable[mid];
-    return defs;
-}
-
-// ==================== ASC 解析器 ====================
-function parseASC(text) {
-    var frames=[], lines=text.split('\n'), baseTime=0, hasBase=false;
-    for(var i=0;i<lines.length;i++){
-        var line=lines[i].trim();
-        if(!line||line.startsWith('//'))continue;
-        // timestamp ch IDx DLC data...
-        var m=line.match(/^(\d+\.?\d*)\s+(\d+)\s+([0-9A-Fa-f]+)[xX]?\s+(\d+)\s+((?:[0-9A-Fa-f]{2}\s*)+)/);
-        if(!m)m=line.match(/^(\d+\.?\d*)\s+CAN\s+(\d+)\s+([0-9A-Fa-f]+)\s+(\d+)\s+((?:[0-9A-Fa-f]{2}\s*)+)/);
-        if(m){
-            var time=parseFloat(m[1]),ch=parseInt(m[2]),id=parseInt(m[3],16),dlc=parseInt(m[4]);
-            var data=m[5].trim().split(/\s+/).map(function(h){return parseInt(h,16);});
-            if(!hasBase){baseTime=time;hasBase=true;}
-            frames.push({time:time-baseTime,id:id,ch:ch,dlc:dlc,data:data});
+    // VAL_TABLE_
+    if(l.indexOf('VAL_TABLE_')===0){
+      var vtMatch=l.match(/VAL_TABLE_\s+(\S+)\s+(.*?)\s*;\s*$/);
+      if(vtMatch){
+        var vtName=vtMatch[1], vtRest=vtMatch[2];
+        var vtPairs=vtRest.match(/(\d+)\s+"([^"]*)"/g);
+        if(vtPairs){
+          var vtVals=[];
+          for(var vti=0;vti<vtPairs.length;vti++){
+            var vtm=vtPairs[vti].match(/(\d+)\s+"([^"]*)"/);
+            if(vtm) vtVals.push({num:parseInt(vtm[1]),desc:vtm[2]});
+          }
+          valTables[vtName]=vtVals;
         }
+      }
+      continue;
     }
-    return frames;
-}
-
-// ==================== BLF 解析器 ====================
-function parseBLF(buffer) {
-    var frames=[];
-    if(buffer.byteLength<144)return frames;
-    var view=new DataView(buffer);
-    // 检查签名
-    var sig='';for(var i=0;i<4;i++)sig+=String.fromCharCode(view.getUint8(i));
-    if(sig!=='BLF0'){console.warn('BLF签名不匹配:',sig);return frames;}
-    var pos=144; // 跳过文件头
-    while(pos<buffer.byteLength-16){
-        if(pos+4>buffer.byteLength)break;
-        var objSig=String.fromCharCode(view.getUint8(pos),view.getUint8(pos+1),view.getUint8(pos+2),view.getUint8(pos+3));
-        if(objSig!=='LOBJ'){pos++;continue;}
-        var headerLen=view.getUint16(pos+4,true);
-        var objType=view.getUint16(pos+8,true);
-        var objLen=view.getUint32(pos+12,true);
-        if(objLen<16||objLen>1000000||pos+objLen>buffer.byteLength){pos+=4;continue;}
-        if(objType===1){ // LOG_CONTAINER
-            var compMethod=view.getUint16(pos+headerLen,true);
-            var compSize=view.getUint32(pos+headerLen+8,true);
-            if(compSize>0&&pos+headerLen+12+compSize<=buffer.byteLength){
-                try{
-                    var compData=new Uint8Array(buffer,pos+headerLen+12,compSize);
-                    var decomp=(compMethod===2&&typeof pako!=='undefined')?pako.inflate(compData):compData;
-                    var subFrames=parseBLFContainer(decomp);
-                    frames=frames.concat(subFrames);
-                }catch(e){console.warn('BLF解压失败:',e);}
-            }
+    // VAL_
+    if(l.indexOf('VAL_')===0 && l.indexOf('VAL_TABLE_')!==0 && l.indexOf('VAL_ SG_')!==0){
+      var valMatch=l.match(/^VAL_\s+(\d+)\s+(\S+)\s+(.*?)\s*;\s*$/);
+      if(valMatch){
+        var valMsgId=+valMatch[1], valSigName=valMatch[2], valRest=valMatch[3];
+        var valPairs=valRest.match(/(\d+)\s+"([^"]*)"/g);
+        if(valPairs){
+          var valVals=[];
+          for(var vi=0;vi<valPairs.length;vi++){
+            var vm=valPairs[vi].match(/(\d+)\s+"([^"]*)"/);
+            if(vm) valVals.push({num:parseInt(vm[1]),desc:vm[2]});
+          }
+          var valMsgDef=S.dbc[valMsgId];
+          if(valMsgDef){
+            var valFullName=valMsgDef.name+'.'+valSigName;
+            dbcEnums[valFullName]={values:valVals,unit:'',description:''};
+          }
         }
-        pos+=objLen;pos=(pos+3)&~3;
+      }
+      continue;
     }
-    return frames;
-}
-function parseBLFContainer(data){
-    var frames=[],pos=0;
-    while(pos<data.length-16){
-        if(String.fromCharCode(data[pos],data[pos+1],data[pos+2],data[pos+3])!=='LOBJ'){pos++;continue;}
-        var hLen=(data[pos+5]<<8)|data[pos+4];
-        var oType=(data[pos+9]<<8)|data[pos+8];
-        var oLen=(data[pos+15]<<24)|(data[pos+14]<<16)|(data[pos+13]<<8)|data[pos+12];
-        if(oLen<16||pos+oLen>data.length){pos+=4;continue;}
-        if(oType===73){ // CAN_MESSAGE
-            var view=new DataView(data.buffer,data.byteOffset+pos,data.length-pos);
-            var ts=view.getFloat64(hLen,true);
-            var ch=data[pos+hLen+8];
-            var dlc=data[pos+hLen+10];
-            var id=(data[pos+hLen+15]<<24)|(data[pos+hLen+14]<<16)|(data[pos+hLen+13]<<8)|data[pos+hLen+12];
-            if(id>=0x80000000)id-=0x80000000;
-            var d=[];for(var j=0;j<dlc&&j<8;j++)d.push(data[pos+hLen+16+j]);
-            frames.push({time:ts/1e9,id:id,ch:ch,dlc:dlc,data:d});
+    // BO_
+    if(l.indexOf('BO_')===0){
+      var m=l.match(/BO_\s+(\d+)\s+(\S+)\s*:\s*(\d+)/);
+      if(m){
+        cm=+m[1]; var nm=m[2], dlc=+m[3], cid=d2c(cm), ch=hex(cid);
+        if(!S.dbc[cm]){
+          S.dbc[cm]={did:cm,cid:cid,ch:ch,name:nm,dlc:dlc,sigs:[]};
+          S.lk[ch]=S.dbc[cm]; mc++;
         }
-        pos+=oLen;pos=(pos+3)&~3;
+      }
+      continue;
     }
-    return frames;
-}
-
-// ==================== 信号解码 ====================
-function decodeSignal(data,sig){
-    var raw=extractBits(data,sig.startBit,sig.bitLength,sig.byteOrder);
-    if(sig.sign==='-'&&raw>=(1<<(sig.bitLength-1)))raw-=(1<<sig.bitLength);
-    return raw*sig.factor+sig.offset;
-}
-function extractBits(data,start,len,bo){
-    var val=0;
-    if(bo===1){//Intel
-        for(var i=0;i<len;i++){var bp=start+i,bi=Math.floor(bp/8),bb=bp%8;if(bi<data.length)val|=((data[bi]>>bb)&1)<<i;}
-    }else{//Motorola
-        for(var i=0;i<len;i++){var bp=start-i;if(bp<0)bp+=8*Math.floor(-bp/8+1);var bi=Math.floor(bp/8),bb=bp%8;if(bi<data.length)val=(val<<1)|((data[bi]>>bb)&1);}
-    }
-    return val;
-}
-
-// ==================== 文件处理 ====================
-document.getElementById('fileInput').addEventListener('change',function(e){processFiles(Array.from(e.target.files));});
-function processFiles(files){
-    var pending=files.length;if(pending===0)return;
-    files.forEach(function(f){
-        var ext=f.name.split('.').pop().toLowerCase();
-        if(ext==='dbc'){
-            var r=new FileReader();
-            r.onload=function(ev){var d=parseDBC(ev.target.result);for(var id in d)state.dbcDefs[id]=d[id];state.dbcFiles.push(f.name);updateStatus();if(--pending===0)checkReady();};
-            r.readAsText(f);
-        }else if(ext==='asc'||ext==='txt'||ext==='csv'){
-            var r2=new FileReader();
-            r2.onload=function(ev){var fr=parseASC(ev.target.result);state.frames=state.frames.concat(fr);state.ascFiles.push(f.name);updateStatus();if(--pending===0)checkReady();};
-            r2.readAsText(f);
-        }else if(ext==='blf'){
-            var r3=new FileReader();
-            r3.onload=function(ev){var fr=parseBLF(ev.target.result);state.frames=state.frames.concat(fr);state.ascFiles.push(f.name);updateStatus();if(--pending===0)checkReady();};
-            r3.readAsArrayBuffer(f);
-        }else{pending--;if(pending===0)checkReady();}
-    });
-}
-function checkReady(){document.getElementById('btnParse').disabled=!(state.frames.length>0||Object.keys(state.dbcDefs).length>0);}
-function updateStatus(){document.getElementById('statusInfo').textContent='ASC:'+state.ascFiles.length+' DBC:'+state.dbcFiles.length+' 帧:'+state.frames.length;}
-
-// ==================== 拖拽支持 ====================
-var dragC=0;
-document.addEventListener('dragenter',function(e){e.preventDefault();dragC++;document.getElementById('dropOverlay').classList.add('show');});
-document.addEventListener('dragleave',function(e){e.preventDefault();dragC--;if(dragC<=0){document.getElementById('dropOverlay').classList.remove('show');dragC=0;}});
-document.addEventListener('dragover',function(e){e.preventDefault();});
-document.addEventListener('drop',function(e){e.preventDefault();document.getElementById('dropOverlay').classList.remove('show');dragC=0;if(e.dataTransfer.files.length)processFiles(Array.from(e.dataTransfer.files));});
-
-// ==================== 解析入口 ====================
-function startParse(){
-    if(state.frames.length===0&&Object.keys(state.dbcDefs).length===0){showModal('提示','请先加载ASC/BLF和DBC文件');return;}
-    state.frames.sort(function(a,b){return a.time-b.time;});
-    state.messages={};
-    state.frames.forEach(function(f){
-        if(!state.messages[f.id]){var dbc=state.dbcDefs[f.id];state.messages[f.id]={id:f.id,name:dbc?dbc.name:'Unknown',dlc:f.dlc,signals:dbc?dbc.signals:[],valTable:dbc?dbc.valTable:null,frames:[],count:0};}
-        state.messages[f.id].frames.push(f);state.messages[f.id].count++;
-    });
-    state.parsed=true;document.getElementById('btnExport').disabled=false;
-    var uids=Object.keys(state.messages).length,sigC=0;
-    for(var m in state.messages)sigC+=state.messages[m].signals.length;
-    var dur=state.frames.length>0?state.frames[state.frames.length-1].time-state.frames[0].time:0;
-    document.getElementById('statFrames').textContent=state.frames.length;
-    document.getElementById('statIDs').textContent=uids;
-    document.getElementById('statSignals').textContent=sigC;
-    document.getElementById('statDuration').textContent=dur.toFixed(2)+'s';
-    renderSidebar();renderProtoView();
-    var first=Object.keys(state.messages)[0];if(first)selectMessage(parseInt(first));
-    showModal('解析完成','共解析 '+state.frames.length+' 帧，'+uids+' 个ID，'+sigC+' 个信号');
-}
-
-// ==================== 侧边栏 ====================
-function renderSidebar(){
-    var c=document.getElementById('sidebarContent');
-    var tab=document.querySelector('.sidebar-tab.active').dataset.tab;
-    if(tab==='messages')renderMsgList(c);else renderSigList(c);
-}
-function renderMsgList(c){
-    var html='';var sorted=Object.values(state.messages).sort(function(a,b){return a.id-b.id;});
-    sorted.forEach(function(msg){
-        var color=COLORS[msg.id%COLORS.length];
-        var hex=msg.id.toString(16).toUpperCase();
-        var act=state.selectedMsg===msg.id?' active':'';
-        html+='<div class="msg-item'+act+'" onclick="selectMessage('+msg.id+')" data-id="'+msg.id+'"><div class="msg-dot" style="background:'+color+'"></div><div class="msg-info"><div class="msg-id">0x'+hex+'</div><div class="msg-name">'+msg.name+'</div></div><div class="msg-meta"><b>'+msg.count+'</b>帧</div></div>';
-    });
-    c.innerHTML=html;
-}
-function renderSigList(c){
-    var html='';
-    for(var mid in state.messages){
-        state.messages[mid].signals.forEach(function(sig,idx){
-            var color=COLORS[(parseInt(mid)+idx)%COLORS.length];
-            var last=state.messages[mid].frames.length>0?decodeSignal(state.messages[mid].frames[state.messages[mid].frames.length-1].data,sig).toFixed(3):'--';
-            html+='<div class="sig-item" onclick="selectMessage('+mid+')"><div class="sig-color" style="background:'+color+'"></div><div class="sig-name">'+sig.name+'</div><div class="sig-val">'+last+(sig.unit?' '+sig.unit:'')+'</div></div>';
+    // SG_
+    if(cm!==null && S.dbc[cm]){
+      var sl=null;
+      if(l.indexOf('SG_')===0) sl=l;
+      else if(l.indexOf(' SG_')>=0) sl=l.substring(l.indexOf(' SG_')+1);
+      if(sl){
+        var ci=sl.indexOf(':'); if(ci<0) continue;
+        var sn=sl.substring(3,ci).trim();
+        var rest=sl.substring(ci+1).trim();
+        var bm=rest.match(/(\d+)\|(\d+)@(\d)([+-])/);
+        if(!bm) continue;
+        var sb=+bm[1], bl=+bm[2], bo=+bm[3], sg=bm[4];
+        rest=rest.substring(bm[0].length).trim();
+        var fm=rest.match(/\(\s*([-\d.]+)\s*,\s*([-\d.]+)\s*\)/);
+        if(!fm) continue;
+        var factor=+fm[1], offset=+fm[2], mn=null, mx=null;
+        var rm=rest.match(/\[\s*([-\d.]*)\s*\|\s*([-\d.]*)\s*\]/);
+        if(rm){ if(rm[1]!=='') mn=+rm[1]; if(rm[2]!=='') mx=+rm[2]; }
+        var unit='', um=rest.match(/"([^"]*)"/);
+        if(um) unit=um[1];
+        S.dbc[cm].sigs.push({
+          name:sn, full:S.dbc[cm].name+'.'+sn, msg:S.dbc[cm].name,
+          start:sb, len:bl, order:bo, sign:sg==='+',
+          scale:factor, offset:offset, min:mn, max:mx, unit:unit
         });
+        sc++;
+      }
     }
-    c.innerHTML=html||'<div class="empty-state" style="height:200px"><div class="es-hint">无信号定义</div></div>';
-}
-function filterSidebar(){
-    var q=document.getElementById('sidebarSearch').value.toLowerCase();
-    document.querySelectorAll('#sidebarContent .msg-item,#sidebarContent .sig-item').forEach(function(el){
-        el.style.display=el.textContent.toLowerCase().indexOf(q)>=0?'':'none';
-    });
-}
-function switchSidebarTab(el){document.querySelectorAll('.sidebar-tab').forEach(function(t){t.classList.remove('active');});el.classList.add('active');renderSidebar();}
-
-// ==================== 报文选择 ====================
-function selectMessage(id){
-    state.selectedMsg=id;
-    document.querySelectorAll('.msg-item').forEach(function(el){el.classList.toggle('active',parseInt(el.dataset.id)===id);});
-    var msg=state.messages[id];if(!msg)return;
-    renderCharts(msg);renderDataTable(msg);
+  }
+  // Apply VAL_TABLE_ references
+  for(var ek in dbcEnums){
+    if(dbcEnums.hasOwnProperty(ek)){
+      var ev=dbcEnums[ek];
+      if(ev.values.length===1 && valTables[ev.values[0].desc]){
+        dbcEnums[ek]={values:valTables[ev.values[0].desc],unit:ev.unit||'',description:ev.description||''};
+      }
+    }
+  }
+  for(var k in S.dbc){
+    if(S.dbc[k].sigs.length>1) S.dbc[k].sigs.sort(function(a,b){return a.start-b.start});
+  }
+  return {m:mc, s:sc};
 }
 
-// ==================== 波形渲染 ====================
-function renderCharts(msg){
-    var area=document.getElementById('chartArea');
-    if(!msg.signals||msg.signals.length===0){area.innerHTML='<div class="empty-state"><div class="es-icon">📈</div><div class="es-text">该报文无信号定义</div><div class="es-hint">请加载对应的DBC文件</div></div>';return;}
-    var html='';
-    msg.signals.forEach(function(sig,idx){
-        var color=COLORS[(msg.id+idx)%COLORS.length];
-        var cid='ch_'+msg.id+'_'+idx;
-        var last=msg.frames.length>0?decodeSignal(msg.frames[msg.frames.length-1].data,sig).toFixed(3):'--';
-        html+='<div class="chart-container"><div class="chart-header"><div class="chart-title" style="color:'+color+'">● '+sig.name+'</div><div class="chart-value">'+last+' '+sig.unit+'</div></div><div class="chart-canvas-wrap"><canvas id="'+cid+'"></canvas></div></div>';
-    });
-    area.innerHTML=html;
-    msg.signals.forEach(function(sig,idx){
-        var cv=document.getElementById('ch_'+msg.id+'_'+idx);
-        if(cv)drawChart(cv,msg,sig,COLORS[(msg.id+idx)%COLORS.length]);
-    });
-}
-function drawChart(canvas,msg,sig,color){
-    var rect=canvas.parentElement.getBoundingClientRect();
-    var dpr=window.devicePixelRatio||1;
-    canvas.width=rect.width*dpr;canvas.height=rect.height*dpr;
-    canvas.style.width=rect.width+'px';canvas.style.height=rect.height+'px';
-    var ctx=canvas.getContext('2d');ctx.scale(dpr,dpr);
-    var W=rect.width,H=rect.height;
-    var pts=[],minV=Infinity,maxV=-Infinity;
-    msg.frames.forEach(function(f){var v=decodeSignal(f.data,sig);pts.push({t:f.time,v:v});if(v<minV)minV=v;if(v>maxV)maxV=v;});
-    if(pts.length===0)return;
-    if(minV===maxV){minV-=1;maxV+=1;}
-    var range=maxV-minV;minV-=range*0.1;maxV+=range*0.1;range=maxV-minV;
-    var pad={l:50,r:10,t:10,b:20},pW=W-pad.l-pad.r,pH=H-pad.t-pad.b;
-    var tMin=pts[0].t,tMax=pts[pts.length-1].t,tR=tMax-tMin||1;
-    ctx.fillStyle='#1A1A1A';ctx.fillRect(0,0,W,H);
-    ctx.strokeStyle='rgba(255,255,255,0.05)';ctx.lineWidth=1;
-    for(var gi=0;gi<=4;gi++){var gy=pad.t+(pH/4)*gi;ctx.beginPath();ctx.moveTo(pad.l,gy);ctx.lineTo(W-pad.r,gy);ctx.stroke();}
-    ctx.fillStyle='#666';ctx.font='10px -apple-system,sans-serif';ctx.textAlign='right';
-    for(var yi=0;yi<=4;yi++){var yv=maxV-(range/4)*yi;ctx.fillText(yv.toFixed(1),pad.l-5,pad.t+(pH/4)*yi+3);}
-    ctx.textAlign='center';
-    for(var xi=0;xi<=5;xi++){var xv=tMin+(tR/5)*xi;ctx.fillText(xv.toFixed(2)+'s',pad.l+(pW/5)*xi,H-4);}
-    ctx.strokeStyle=color;ctx.lineWidth=1.5;ctx.beginPath();var started=false;
-    pts.forEach(function(p){var x=pad.l+((p.t-tMin)/tR)*pW,y=pad.t+((maxV-p.v)/range)*pH;if(!started){ctx.moveTo(x,y);started=true;}else ctx.lineTo(x,y);});
-    ctx.stroke();
-    ctx.lineTo(pad.l+pW,pad.t+pH);ctx.lineTo(pad.l,pad.t+pH);ctx.closePath();
-    ctx.fillStyle=color.replace(')',',0.08)').replace('rgb','rgba');ctx.fill();
+// ========== ASC Parsing ==========
+function parseASC(content){
+  var ls=content.split(/\r?\n/), msgs=[], sk=0;
+  for(var i=0;i<ls.length;i++){
+    var l=ls[i].trim();
+    if(l.length<10){sk++;continue}
+    var c0=l.charCodeAt(0);
+    if(c0<45||c0>57){sk++;continue}
+    var p=l.split(/\s+/);
+    if(p.length<7){sk++;continue}
+    var ts=parseFloat(p[0]); if(isNaN(ts)){sk++;continue}
+    var ch=parseInt(p[1],10); if(isNaN(ch)) ch=1;
+    var idStr=p[2];
+    if(idStr.slice(-1)==='x'||idStr.slice(-1)==='X') idStr=idStr.slice(0,-1);
+    var id=parseInt(idStr,16); if(isNaN(id)){sk++;continue}
+    var di=-1;
+    for(var j=3;j<p.length;j++){if(p[j]==='d'||p[j]==='D'){di=j;break}}
+    if(di<0||di+1>=p.length){sk++;continue}
+    var dlc=parseInt(p[di+1],10);
+    if(isNaN(dlc)||dlc<0||dlc>64){sk++;continue}
+    var data=[];
+    for(var k=di+2;k<p.length&&data.length<dlc;k++){
+      var v=parseInt(p[k],16); if(!isNaN(v)) data.push(v);
+    }
+    while(data.length<dlc) data.push(0);
+    msgs.push({ts:ts,ch:ch,id:id,idH:hex(d2c(id)),dlc:dlc,data:data});
+  }
+  msgs.sort(function(a,b){return a.ts-b.ts});
+  return msgs;
 }
 
-// ==================== 数据表格 ====================
-function renderDataTable(msg){
-    var tb=document.getElementById('dataTableBody'),html='';
-    var disp=msg.frames.slice(-200);
-    disp.forEach(function(f){
-        var hex=f.data.map(function(b){return('0'+b.toString(16).toUpperCase()).slice(-2);}).join(' ');
-        var sigs='';
-        if(msg.signals.length>0){msg.signals.forEach(function(sig,idx){
-            var v=decodeSignal(f.data,sig),d=v.toFixed(2);
-            if(msg.valTable&&msg.valTable[sig.name]&&msg.valTable[sig.name][Math.round(v)])d=msg.valTable[sig.name][Math.round(v)];
-            sigs+=(idx>0?', ':'')+sig.name+'='+d;
-        });}
-        var per='';var fi=msg.frames.indexOf(f);if(fi>0)per=((f.time-msg.frames[fi-1].time)*1000).toFixed(1)+'ms';
-        html+='<tr><td class="time-val">'+f.time.toFixed(6)+'</td><td>'+f.ch+'</td><td class="id-val">0x'+f.id.toString(16).toUpperCase()+'</td><td>'+f.dlc+'</td><td class="hex-val">'+hex+'</td><td>'+per+'</td><td class="sig-val-cell">'+sigs+'</td></tr>';
-    });
-    tb.innerHTML=html;
+// ========== BLF Parsing ==========
+function parseBLF(buf){
+  var u8=new Uint8Array(buf), len=buf.byteLength, dv=new DataView(buf);
+  if(len<144) return [];
+  var sig=String.fromCharCode(u8[0],u8[1],u8[2],u8[3]);
+  if(sig!=='LOGG') return [];
+  var pos=144, msgs=[];
+  while(pos+16<=len){
+    var osig=String.fromCharCode(u8[pos],u8[pos+1],u8[pos+2],u8[pos+3]);
+    if(osig!=='LOBJ'){pos++;continue}
+    var hdrSize=dv.getUint16(pos+4,true);
+    var objSize=dv.getUint32(pos+8,true);
+    var objType=dv.getUint32(pos+12,true);
+    if(objSize<16||objSize>100000000){pos++;continue}
+    var pad=objSize%4;
+    if(objType===10){
+      var raw=null;
+      if(pos+32<=len){
+        var method=dv.getUint16(pos+16,true);
+        var containerData=buf.slice(pos+32,pos+objSize);
+        if(method===0){raw=new Uint8Array(containerData)}
+        else if((method===2||method===1)&&typeof pako!=='undefined'){
+          try{raw=pako.inflate(new Uint8Array(containerData))}catch(e){
+            try{raw=pako.inflate(new Uint8Array(buf.slice(pos+16,pos+objSize)))}catch(e2){raw=null}
+          }
+        }
+      }
+      if(!raw||raw.length===0){
+        var allData=new Uint8Array(buf.slice(pos+16,pos+objSize));
+        if(allData.length>16) raw=allData;
+      }
+      if(raw&&raw.length>16){
+        var inner=parseBLFContainer(raw);
+        if(inner.length>0) msgs=msgs.concat(inner);
+      }
+    }else{
+      parseBLFObj(dv,u8,msgs,objType,pos+hdrSize,len,0);
+    }
+    pos+=objSize+pad;
+  }
+  msgs.sort(function(a,b){return a.ts-b.ts});
+  return msgs;
 }
 
-// ==================== 协议视图 ====================
+function parseBLFObj(dv,u8,msgs,objType,dp,len,ts){
+  if(objType===1 && dp+16<=len){
+    var ch=dv.getUint16(dp,true), dlc=dv.getUint8(dp+3);
+    var arbId=dv.getUint32(dp+4,true);
+    var data=[];
+    for(var d=0;d<dlc&&d<8&&dp+8+d<len;d++) data.push(u8[dp+8+d]);
+    msgs.push({ts:ts,ch:ch+1,id:arbId,idH:hex(d2c(arbId)),dlc:dlc,data:data});
+  }else if(objType===86 && dp+8<=len){
+    var ch2=u8[dp], dlc2=u8[dp+3];
+    var arbId2=dv.getUint32(dp+4,true)&0x1FFFFFFF;
+    var data2=[];
+    for(var d2=0;d2<dlc2&&d2<8&&dp+8+d2<len;d2++) data2.push(u8[dp+8+d2]);
+    msgs.push({ts:ts,ch:ch2+1,id:arbId2,idH:hex(d2c(arbId2)),dlc:dlc2,data:data2});
+  }else if((objType===100||objType===101) && dp+24<=len){
+    var chf=dv.getUint16(dp,true), dlcf=dv.getUint8(dp+3);
+    var arbIdf=dv.getUint32(dp+4,true);
+    var dLen=dlcf<=8?dlcf:(dlcf<=12?16:(dlcf<=16?20:(dlcf<=20?24:(dlcf<=24?32:(dlcf<=32?48:64)))));
+    var dataf=[];
+    var fDataStart=objType===101?dp+16:dp+12;
+    for(var df=0;df<dLen&&fDataStart+df<len;df++) dataf.push(u8[fDataStart+df]);
+    msgs.push({ts:ts,ch:chf+1,id:arbIdf,idH:hex(d2c(arbIdf)),dlc:dlcf,data:dataf});
+  }
+}
+
+function parseBLFContainer(u8){
+  var dv=new DataView(u8.buffer,u8.byteOffset,u8.byteLength);
+  var msgs=[], pos=0, len=u8.length;
+  while(pos+16<=len){
+    if(u8[pos]!==0x4C||u8[pos+1]!==0x4F||u8[pos+2]!==0x42||u8[pos+3]!==0x4A){pos++;continue}
+    var hdrSize=dv.getUint16(pos+4,true);
+    var objSize=dv.getUint32(pos+8,true);
+    var objType=dv.getUint32(pos+12,true);
+    if(objSize<16||objSize>1000000){pos++;continue}
+    var ts=0;
+    if(hdrSize>=32 && pos+32<=len){
+      var tsLo=dv.getUint32(pos+24,true);
+      var tsHi=dv.getUint32(pos+28,true);
+      var rawTs=tsHi*4294967296+tsLo;
+      if(rawTs>1e15) ts=rawTs/1000000000.0;
+      else ts=rawTs/100000.0;
+      if(ts>62135596800) ts-=62135596800.0;
+    }
+    var dp=pos+hdrSize;
+    parseBLFObj(dv,u8,msgs,objType,dp,len,ts);
+    var pad=objSize%4;
+    pos+=objSize+pad;
+  }
+  return msgs;
+}
+
+// ========== Signal Decoding ==========
+function extractBits(data, start, len, order){
+  var raw=0;
+  for(var b=0;b<len;b++){
+    var bi;
+    if(order===1) bi=start+b; // Intel (little-endian)
+    else bi=start+(len-1-b); // Motorola (big-endian)
+    var byteIdx=bi>>3, bitIdx=bi&7;
+    if(byteIdx>=0 && byteIdx<data.length){
+      var bit=(data[byteIdx]>>bitIdx)&1;
+      raw|=(bit<<b);
+    }
+  }
+  return raw;
+}
+
+function decodeSignal(msg, sig){
+  if(!msg.data || msg.data.length<1) return null;
+  var raw = extractBits(msg.data, sig.start, sig.len, sig.order);
+  if(sig.sign && raw>>(sig.len-1)) raw-=(1<<sig.len);
+  return raw * sig.scale + sig.offset;
+}
+
+// ========== Decode All Signals ==========
+function decodeAllSignals(){
+  S.dec = {};
+  var msgs = filteredMsgs();
+  for(var i=0;i<msgs.length;i++){
+    var msg=msgs[i], def=S.lk[msg.idH];
+    if(!def || !def.sigs.length) continue;
+    for(var j=0;j<def.sigs.length;j++){
+      var sig=def.sigs[j];
+      var raw=extractBits(msg.data, sig.start, sig.len, sig.order);
+      if(sig.sign && raw>>(sig.len-1)) raw-=(1<<sig.len);
+      var phys=raw*sig.scale+sig.offset;
+      if(!S.dec[sig.full]) S.dec[sig.full]=[];
+      S.dec[sig.full].push({t:msg.ts, v:phys});
+    }
+  }
+}
+
+function filteredMsgs(){
+  return S.msgs; // could add channel filtering later
+}
+
+// ========== Parse All ==========
+function parseAll(){
+  if(!S.dbcFiles.length && !S.ascFiles.length) return;
+  S.dbc={}; S.lk={}; S.msgs=[]; S.dec={}; S.selId=null; S.ok=false;
+  AXES=[]; axId=0;
+
+  var dbcPromises = S.dbcFiles.map(function(f){ return readFile(f); });
+  var ascPromises = S.ascFiles.map(function(f){
+    if(/\.blf$/i.test(f.name)) return readBin(f).then(function(buf){ return {data:buf,blf:true,name:f.name}; });
+    return readFile(f).then(function(txt){ return {data:txt,blf:false,name:f.name}; });
+  });
+
+  Promise.all(dbcPromises).then(function(dbcContents){
+    var mc=0,sc=0;
+    for(var i=0;i<dbcContents.length++){
+      var r=parseDBC(dbcContents[i]); mc+=r.m; sc+=r.s;
+    }
+    return Promise.all(ascPromises);
+  }).then(function(ascResults){
+    for(var i=0;i<ascResults.length;i++){
+      var r=ascResults[i];
+      var parsed = r.blf ? parseBLF(r.data) : parseASC(r.data);
+      S.msgs=S.msgs.concat(parsed);
+    }
+    S.msgs.sort(function(a,b){return a.ts-b.ts});
+
+    // Build ID index
+    S.idF={};
+    for(var i=0;i<S.msgs.length;i++){
+      var h=S.msgs[i].idH;
+      if(!S.idF[h]) S.idF[h]=[];
+      S.idF[h].push(i);
+    }
+
+    decodeAllSignals();
+    S.ok=true;
+
+    // Update stats
+    var msgs=filteredMsgs();
+    $('statFrames').textContent=msgs.length;
+    var ids={}; for(var i=0;i<msgs.length;i++) ids[msgs[i].idH]=1;
+    $('statIds').textContent=Object.keys(ids).length;
+    var sc=0; for(var k in S.dbc) sc+=S.dbc[k].sigs.length;
+    $('statSigs').textContent=sc;
+    if(msgs.length>1) $('statDur').textContent=(msgs[msgs.length-1].ts-msgs[0].ts).toFixed(3)+'s';
+
+    $('idCount').textContent=Object.keys(S.idF).length+' IDs';
+    renderIdList();
+    renderProtoView();
+    renderLegend();
+
+    // Auto-select first few signals for waveform
+    autoSelectSignals();
+    renderWaveform();
+    renderSigPanel();
+  }).catch(function(e){ console.error('Parse error:',e); });
+}
+
+// ========== Auto-select signals ==========
+function autoSelectSignals(){
+  AXES=[];
+  var sigNames=Object.keys(S.dec);
+  var count=Math.min(3, sigNames.length);
+  for(var i=0;i<count;i++){
+    var name=sigNames[i];
+    var sig=null;
+    for(var mid in S.dbc){
+      for(var j=0;j<S.dbc[mid].sigs.length;j++){
+        if(S.dbc[mid].sigs[j].full===name){sig=S.dbc[mid].sigs[j];break}
+      }
+      if(sig)break;
+    }
+    AXES.push({id:axId++, name:name, color:axColors[i%axColors.length], visible:true, sig:sig});
+  }
+  renderLegend();
+}
+
+// ========== ID List ==========
+function renderIdList(){
+  var msgs=filteredMsgs(), cnt={};
+  for(var i=0;i<msgs.length;i++){
+    var k=msgs[i].idH;
+    if(!cnt[k]) cnt[k]={n:0};
+    cnt[k].n++;
+  }
+  var el=$('idList'), h='', sorted=Object.keys(cnt).sort(), fl=$('idSearch').value.toLowerCase();
+  for(var i=0;i<sorted.length;i++){
+    var idH=sorted[i], def=S.lk[idH];
+    if(fl && idH.toLowerCase().indexOf(fl)<0 && !(def && def.name.toLowerCase().indexOf(fl)>=0)) continue;
+    h+='<div class="msg-item'+(S.selId===idH?' active':'')+'" data-id="'+idH+'" onclick="selectId(\''+idH+'\')">';
+    h+='<span class="msg-dot" style="background:'+ac(i)+'"></span>';
+    h+='<span class="msg-id">0x'+idH+'</span>';
+    h+='<span class="msg-name">'+(def?def.name:'')+'</span>';
+    h+='<span class="msg-cnt">'+cnt[idH].n+'</span>';
+    h+='</div>';
+  }
+  el.innerHTML=h||'<div style="color:#555;font-size:11px;text-align:center;padding:20px">无数据</div>';
+}
+
+function selectId(idH){
+  S.selId = S.selId===idH ? null : idH;
+  renderIdList();
+  renderDataView();
+  renderSigPanel();
+}
+
+// ========== View Switching ==========
+function switchView(view){
+  currentView=view;
+  document.querySelectorAll('.view-tab').forEach(function(t){
+    t.classList.toggle('active', t.dataset.view===view);
+  });
+  $('waveView').style.display=view==='wave'?'':'none';
+  $('dataView').style.display=view==='data'?'':'none';
+  $('protoView').style.display=view==='proto'?'':'none';
+}
+
+// ========== Legend ==========
+function renderLegend(){
+  var bar=$('legendBar'), h='';
+  for(var i=0;i<AXES.length;i++){
+    var ax=AXES[i];
+    h+='<span class="legend-item'+(ax.visible?'':' hidden')+'" onclick="toggleAxis('+ax.id+')" style="border-color:'+ax.color+'44">';
+    h+='<span class="legend-dot" style="background:'+ax.color+'"></span>';
+    h+='<span class="legend-name">'+ax.name+'</span>';
+    h+='</span>';
+  }
+  h+='<span class="legend-item" onclick="openSigModal()" style="border-style:dashed;color:var(--accent)">+ 添加信号</span>';
+  bar.innerHTML=h;
+}
+
+function toggleAxis(id){
+  for(var i=0;i<AXES.length;i++){
+    if(AXES[i].id===id){AXES[i].visible=!AXES[i].visible;break}
+  }
+  renderLegend();
+  renderWaveform();
+}
+
+// ========== Waveform Rendering ==========
+function renderWaveform(){
+  var container=$('waveRows');
+  var h='';
+  for(var i=0;i<AXES.length;i++){
+    var ax=AXES[i];
+    if(!ax.visible) continue;
+    var points=S.dec[ax.name]||[];
+    var lastVal=points.length?points[points.length-1].v.toFixed(2):'-';
+    h+='<div class="wave-row">';
+    h+='<div class="wave-header">';
+    h+='<span class="wave-label" style="color:'+ax.color+'">● '+ax.name+'</span>';
+    h+='<span class="wave-value">'+lastVal+' '+(ax.sig?ax.sig.unit:'')+'</span>';
+    h+='</div>';
+    h+='<div class="wave-canvas-wrap"><canvas id="wc'+ax.id+'" width="800" height="120"></canvas></div>';
+    h+='</div>';
+  }
+  if(!AXES.length||!AXES.some(function(a){return a.visible})){
+    h='<div class="empty-state"><div class="empty-icon">📈</div><div class="empty-text">添加信号以查看波形</div><div class="empty-hint">点击下方信号面板或图例中的"+ 添加信号"</div></div>';
+  }
+  container.innerHTML=h;
+
+  // Draw each canvas
+  for(var i=0;i<AXES.length;i++){
+    var ax=AXES[i];
+    if(!ax.visible) continue;
+    drawWaveCanvas(ax);
+  }
+}
+
+function drawWaveCanvas(ax){
+  var canvas=$('wc'+ax.id);
+  if(!canvas) return;
+  var ctx=canvas.getContext('2d');
+  var W=canvas.width=canvas.parentElement.clientWidth*2;
+  var H=canvas.height=240;
+  ctx.clearRect(0,0,W,H);
+
+  var points=S.dec[ax.name]||[];
+  if(points.length<2){
+    ctx.fillStyle='#555';ctx.font='20px -apple-system';ctx.textAlign='center';
+    ctx.fillText('无数据',W/2,H/2);
+    return;
+  }
+
+  // Find data range
+  var minV=Infinity,maxV=-Infinity;
+  for(var i=0;i<points.length;i++){
+    if(points[i].v<minV) minV=points[i].v;
+    if(points[i].v>maxV) maxV=points[i].v;
+  }
+  if(minV===maxV){minV-=1;maxV+=1}
+  var range=maxV-minV;
+  var t0=points[0].t, t1=points[points.length-1].t;
+  var tRange=t1-t0; if(tRange<=0) tRange=1;
+
+  // Grid
+  ctx.strokeStyle='#1a1a2a';ctx.lineWidth=1;
+  for(var g=0;g<5;g++){
+    var y=H*0.1+(H*0.8)*g/4;
+    ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();
+  }
+
+  // Draw waveform
+  ctx.strokeStyle=ax.color;ctx.lineWidth=2;ctx.beginPath();
+  for(var i=0;i<points.length;i++){
+    var x=((points[i].t-t0)/tRange)*W;
+    var y=H*0.9-((points[i].v-minV)/range)*H*0.8;
+    if(i===0) ctx.moveTo(x,y);
+    else ctx.lineTo(x,y);
+  }
+  ctx.stroke();
+
+  // Fill area
+  ctx.globalAlpha=0.1;
+  ctx.fillStyle=ax.color;
+  ctx.lineTo(W,H);ctx.lineTo(0,H);ctx.closePath();ctx.fill();
+  ctx.globalAlpha=1;
+
+  // Min/Max labels
+  ctx.fillStyle='#666';ctx.font='18px -apple-system';
+  ctx.fillText(maxV.toFixed(1),8,22);
+  ctx.fillText(minV.toFixed(1),8,H-6);
+}
+
+// ========== Data View ==========
+function renderDataView(){
+  if(!S.selId){
+    $('dataEmpty').style.display='';
+    $('dataContent').style.display='none';
+    return;
+  }
+  $('dataEmpty').style.display='none';
+  $('dataContent').style.display='';
+
+  var def=S.lk[S.selId];
+  var idIdxs=S.idF[S.selId]||[];
+  var h='<h3 style="color:var(--cyan);margin-bottom:10px;font-size:14px">0x'+S.selId+' '+(def?def.name:'')+'</h3>';
+
+  // Signal table
+  if(def && def.sigs.length){
+    h+='<table class="data-table"><thead><tr><th>信号</th><th>原始值</th><th>物理值</th><th>单位</th><th>起始位</th><th>长度</th></tr></thead><tbody>';
+    var lastIdx=idIdxs[idIdxs.length-1];
+    var lastMsg=S.msgs[lastIdx];
+    for(var j=0;j<def.sigs.length;j++){
+      var sig=def.sigs[j];
+      var raw=extractBits(lastMsg.data,sig.start,sig.len,sig.order);
+      if(sig.sign && raw>>(sig.len-1)) raw-=(1<<sig.len);
+      var phys=raw*sig.scale+sig.offset;
+      h+='<tr><td style="color:var(--text-primary)">'+sig.name+'</td>';
+      h+='<td style="color:var(--orange)">'+raw+'</td>';
+      h+='<td style="color:var(--cyan)">'+phys.toFixed(2)+'</td>';
+      h+='<td>'+sig.unit+'</td>';
+      h+='<td>'+sig.start+'</td>';
+      h+='<td>'+sig.len+'</td></tr>';
+    }
+    h+='</tbody></table>';
+  }
+
+  // Raw hex data
+  h+='<h4 style="color:var(--text-secondary);margin:12px 0 6px;font-size:12px">原始数据 (最新帧)</h4>';
+  if(idIdxs.length>0){
+    var lastMsg=S.msgs[idIdxs[idIdxs.length-1]];
+    h+='<div class="hex-grid">';
+    for(var b=0;b<lastMsg.data.length;b++){
+      h+='<div class="hex-byte"><span class="ix">B'+b+'</span><span class="vl">'+('0'+lastMsg.data[b].toString(16)).slice(-2).toUpperCase()+'</span></div>';
+    }
+    h+='</div>';
+  }
+
+  $('dataContent').innerHTML=h;
+}
+
+// ========== Protocol View ==========
 function renderProtoView(){
-    var v=document.getElementById('protoView'),html='';
-    Object.values(state.dbcDefs).sort(function(a,b){return a.id-b.id;}).forEach(function(msg){
-        var hex=msg.id.toString(16).toUpperCase();
-        html+='<div class="proto-card"><div class="proto-card-hdr"><div class="proto-card-id">0x'+hex+'</div><div class="proto-card-name">'+msg.name+'</div><div class="proto-card-meta">DLC:'+msg.dlc+(msg.sender?' | '+msg.sender:'')+'</div></div>';
-        if(msg.signals.length>0){
-            html+='<table class="proto-sig-table"><thead><tr><th>信号名</th><th>起始位</th><th>长度</th><th>字节序</th><th>因子</th><th>偏移</th><th>范围</th><th>单位</th></tr></thead><tbody>';
-            msg.signals.forEach(function(s){
-                html+='<tr><td>'+s.name+'</td><td>'+s.startBit+'</td><td>'+s.bitLength+'</td><td>'+(s.byteOrder===1?'Intel':'Motorola')+'</td><td>'+s.factor+'</td><td>'+s.offset+'</td><td>['+s.min+'|'+s.max+']</td><td>'+s.unit+'</td></tr>';
-            });
-            html+='</tbody></table>';
-        }else html+='<div style="padding:10px;color:#555;font-size:11px">无信号定义</div>';
-        html+='</div>';
-    });
-    if(!html)html='<div class="empty-state"><div class="es-icon">📖</div><div class="es-text">暂无协议定义</div></div>';
-    v.innerHTML=html;
+  var keys=Object.keys(S.dbc);
+  if(!keys.length){
+    $('protoEmpty').style.display='';
+    $('protoContent').style.display='none';
+    return;
+  }
+  $('protoEmpty').style.display='none';
+  $('protoContent').style.display='';
+
+  var h='';
+  keys.sort(function(a,b){return (+a)-(+b)});
+  for(var i=0;i<keys.length;i++){
+    var msg=S.dbc[keys[i]];
+    h+='<div class="proto-card">';
+    h+='<div class="proto-hdr"><span class="proto-id">0x'+msg.ch+'</span><span class="proto-name">'+msg.name+'</span><span style="margin-left:auto;color:#555;font-size:10px">DLC:'+msg.dlc+' ID:'+msg.did+'</span></div>';
+    if(msg.sigs.length){
+      h+='<table class="proto-table"><thead><tr><th>信号</th><th>起始位</th><th>长度</th><th>字节序</th><th>因子</th><th>偏移</th><th>范围</th><th>单位</th></tr></thead><tbody>';
+      for(var j=0;j<msg.sigs.length;j++){
+        var sig=msg.sigs[j];
+        h+='<tr><td style="color:var(--text-primary)">'+sig.name+'</td>';
+        h+='<td>'+sig.start+'</td><td>'+sig.len+'</td>';
+        h+='<td>'+(sig.order===1?'Intel':'Motorola')+'</td>';
+        h+='<td>'+sig.scale+'</td><td>'+sig.offset+'</td>';
+        h+='<td>'+(sig.min!==null?'['+sig.min+'|'+sig.max+']':'')+'</td>';
+        h+='<td>'+sig.unit+'</td></tr>';
+      }
+      h+='</tbody></table>';
+    }
+    h+='</div>';
+  }
+  $('protoContent').innerHTML=h;
 }
 
-// ==================== 视图切换 ====================
-function switchView(el){
-    document.querySelectorAll('.view-tab').forEach(function(t){t.classList.remove('active');});
-    el.classList.add('active');
-    var vn=el.dataset.view;
-    document.querySelectorAll('.view-panel').forEach(function(p){p.classList.remove('active');});
-    document.getElementById('view'+vn.charAt(0).toUpperCase()+vn.slice(1)).classList.add('active');
+// ========== Signal Panel ==========
+function renderSigPanel(){
+  var el=$('sigPanel'), h='';
+  if(!S.selId || !S.lk[S.selId]){
+    el.innerHTML='<div style="padding:10px;color:#555;font-size:11px;text-align:center">选择报文查看信号</div>';
+    return;
+  }
+  var def=S.lk[S.selId];
+  var idIdxs=S.idF[S.selId]||[];
+  var lastMsg=idIdxs.length?S.msgs[idIdxs[idIdxs.length-1]]:null;
+
+  for(var j=0;j<def.sigs.length;j++){
+    var sig=def.sigs[j];
+    var val='-';
+    if(lastMsg){
+      var raw=extractBits(lastMsg.data,sig.start,sig.len,sig.order);
+      if(sig.sign && raw>>(sig.len-1)) raw-=(1<<sig.len);
+      val=(raw*sig.scale+sig.offset).toFixed(2);
+    }
+    var isOnChart=AXES.some(function(a){return a.name===sig.full});
+    h+='<div class="sig-item'+(isOnChart?' selected':'')+'" onclick="toggleSignalOnChart(\''+sig.full.replace(/'/g,"\\'")+'\')">';
+    h+='<span class="sig-dot" style="background:'+(isOnChart?axColors[AXES.findIndex(function(a){return a.name===sig.full})%axColors.length]:'#555')+'"></span>';
+    h+='<span class="sig-name">'+sig.name+'</span>';
+    h+='<span class="sig-val">'+val+' '+sig.unit+'</span>';
+    h+='</div>';
+  }
+  el.innerHTML=h;
 }
 
-// ==================== 工具函数 ====================
-function clearAll(){
-    state={ascFiles:[],dbcFiles:[],messages:{},dbcDefs:{},frames:[],selectedMsg:null,signalColors:{},parsed:false,colorIndex:0};
-    ['statFrames','statIDs','statSignals'].forEach(function(id){document.getElementById(id).textContent='0';});
-    document.getElementById('statDuration').textContent='0s';
-    document.getElementById('btnParse').disabled=true;document.getElementById('btnExport').disabled=true;
-    document.getElementById('sidebarContent').innerHTML='<div class="empty-state" style="height:200px"><div class="es-icon">📋</div><div class="es-hint">打开ASC/BLF/DBC文件开始</div></div>';
-    document.getElementById('chartArea').innerHTML='<div class="empty-state"><div class="es-icon">📈</div><div class="es-text">暂无波形数据</div></div>';
-    document.getElementById('dataTableBody').innerHTML='';
-    document.getElementById('protoView').innerHTML='<div class="empty-state"><div class="es-icon">📖</div><div class="es-text">暂无协议定义</div></div>';
-    document.getElementById('statusInfo').textContent='';
+function toggleSignalOnChart(sigName){
+  var idx=-1;
+  for(var i=0;i<AXES.length;i++){if(AXES[i].name===sigName){idx=i;break}}
+  if(idx>=0){
+    AXES.splice(idx,1);
+  }else{
+    var sig=null;
+    for(var mid in S.dbc){
+      for(var j=0;j<S.dbc[mid].sigs.length;j++){
+        if(S.dbc[mid].sigs[j].full===sigName){sig=S.dbc[mid].sigs[j];break}
+      }
+      if(sig)break;
+    }
+    AXES.push({id:axId++, name:sigName, color:axColors[AXES.length%axColors.length], visible:true, sig:sig});
+  }
+  renderLegend();
+  renderWaveform();
+  renderSigPanel();
 }
-function exportData(){
-    if(!state.parsed)return;
-    var csv='时间,ID,DLC,数据\n';
-    state.frames.forEach(function(f){csv+=f.time.toFixed(6)+',0x'+f.id.toString(16).toUpperCase()+','+f.dlc+','+f.data.map(function(b){return('0'+b.toString(16)).slice(-2);}).join(' ')+'\n';});
-    var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
-    a.download='can_export_'+new Date().toISOString().slice(0,10)+'.csv';a.click();
+
+// ========== Signal Selector Modal ==========
+function openSigModal(){
+  var body=$('sigModalBody'), h='';
+  var allSigs=[];
+  for(var mid in S.dbc){
+    var msg=S.dbc[mid];
+    for(var j=0;j<msg.sigs.length;j++){
+      allSigs.push(msg.sigs[j]);
+    }
+  }
+  for(var i=0;i<allSigs.length;i++){
+    var sig=allSigs[i];
+    var isActive=AXES.some(function(a){return a.name===sig.full});
+    h+='<div class="modal-sig'+(isActive?' active':'')+'" onclick="toggleSigModal(\''+sig.full.replace(/'/g,"\\'")+'\')">';
+    h+='<span class="ms-dot" style="background:'+(isActive?axColors[AXES.findIndex(function(a){return a.name===sig.full})%axColors.length]:'#555')+'"></span>';
+    h+='<span class="ms-name">'+sig.full+'</span>';
+    h+='<span class="ms-unit">'+sig.unit+'</span>';
+    h+='</div>';
+  }
+  body.innerHTML=h||'<div style="padding:20px;color:#555;text-align:center">无信号定义</div>';
+  $('sigModal').classList.add('show');
 }
-function showModal(t,b){document.getElementById('modalTitle').textContent=t;document.getElementById('modalBody').textContent=b;document.getElementById('modalOverlay').classList.add('show');}
-function closeModal(){document.getElementById('modalOverlay').classList.remove('show');}
-window.addEventListener('resize',function(){if(state.selectedMsg&&state.messages[state.selectedMsg])renderCharts(state.messages[state.selectedMsg]);});
+
+function closeSigModal(){$('sigModal').classList.remove('show')}
+
+function toggleSigModal(sigName){
+  toggleSignalOnChart(sigName);
+  openSigModal(); // refresh
+}
+
+// ========== Resize handling ==========
+window.addEventListener('resize', function(){
+  if(S.ok) renderWaveform();
+});
+
+// ========== Init ==========
+updateFileChips();
 </script>
 </body>
 </html>
