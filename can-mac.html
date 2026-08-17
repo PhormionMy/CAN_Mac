@@ -8,42 +8,31 @@
 ╔══════════════════════════════════════════════════════════════╗
 ║  CAN Mac Analyzer - 版本信息                                  ║
 ║  ⚠️ 重要：任何代码改动都必须同步更新下方的版本号和日期时间！      ║
-║  版本号格式：vX.Y.Z                                            ║
-║  日期格式：YYYY-MM-DD HH:MM                                   ║
 ╚══════════════════════════════════════════════════════════════╝
 -->
 <script>
-/* ============================================================
- * CAN Mac Analyzer - 版本配置
- * ⚠️ 每次代码修改都必须更新 VERSION 和 BUILD_DATE
- * ============================================================ */
-var APP_VERSION = "v4.0.0";
-var BUILD_DATE = "2026-08-17 17:45";
-/* ============================================================ */
+/* ⚠️ 每次代码修改都必须更新 VERSION 和 BUILD_DATE */
+var APP_VERSION = "v6.0.0";
+var BUILD_DATE = "2026-08-17 18:55";
 </script>
 <script src="https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--accent:#007AFF;--bg:#1C1C1E;--bg2:#2C2C2E;--bg3:#3A3A3C;--text:#E5E5EA;--text2:#AEAEB2;--text3:#8E8E93;--border:#38383A;--blue:#0A84FF;--green:#30D158;--red:#FF453A;--orange:#FF9F0A;--purple:#BF5AF2;--teal:#64D2FF;--row-h:22px}
+:root{--bg:#1C1C1E;--bg2:#2C2C2E;--bg3:#3A3A3C;--text:#E5E5EA;--text2:#AEAEB2;--text3:#8E8E93;--border:#38383A;--blue:#0A84FF;--green:#30D158;--red:#FF453A;--orange:#FF9F0A;--purple:#BF5AF2;--teal:#64D2FF;--row-h:22px}
 html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Helvetica Neue',Arial,sans-serif;font-size:12px;-webkit-font-smoothing:antialiased}
 body{display:flex;flex-direction:column}
 button{font-family:inherit;cursor:pointer}input,select{font-family:inherit}
 ::-webkit-scrollbar{width:6px;height:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:#424242;border-radius:3px}
-
 .hdr{height:36px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 10px;flex-shrink:0}
 .hdr-logo{font-size:14px;font-weight:700;display:flex;align-items:center;gap:5px}.hdr-logo .ic{color:var(--blue)}
 .hdr-right{margin-left:auto;font-size:10px;color:var(--text3);display:flex;gap:8px;align-items:center}.hdr-right .v{color:var(--blue);font-weight:600}
-
 .tbar{height:32px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 8px;gap:3px;flex-shrink:0}
 .tb{height:24px;padding:0 8px;border-radius:3px;border:1px solid var(--border);background:var(--bg3);color:var(--text);font-size:10px;display:flex;align-items:center;gap:3px;white-space:nowrap}
 .tb:hover{background:#48484A}.tb:active{background:#545456}.tb.on{background:var(--blue);border-color:var(--blue);color:#fff}
 .tb:disabled{opacity:.35;pointer-events:none}
 .tb-sep{width:1px;height:18px;background:var(--border);margin:0 2px}
 .tb-info{margin-left:auto;font-size:10px;color:var(--text3);display:flex;gap:8px}.tb-info b{color:var(--text)}
-
 .main{flex:1;display:flex;overflow:hidden}
-
-/* 左侧 */
 .left{width:260px;background:#1C1C1E;border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0}
 .left-search{padding:4px;border-bottom:1px solid var(--border)}
 .left-search input{width:100%;height:22px;background:var(--bg3);border:1px solid var(--border);border-radius:3px;padding:0 6px;color:var(--text);font-size:10px;outline:none}
@@ -56,47 +45,36 @@ button{font-family:inherit;cursor:pointer}input,select{font-family:inherit}
 .left-tab{flex:1;padding:4px 0;text-align:center;font-size:9px;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent}
 .left-tab.on{color:var(--blue);border-bottom-color:var(--blue)}
 .left-list{flex:1;overflow-y:auto}
-
-/* 排序栏 */
 .sort-bar{padding:3px 4px;border-bottom:1px solid var(--border);display:flex;gap:3px;align-items:center;font-size:9px}
 .sort-bar .sl{color:var(--text3)}
 .sort-btn{padding:1px 5px;border-radius:2px;border:1px solid var(--border);background:var(--bg3);color:var(--text3);font-size:8px;cursor:pointer}
 .sort-btn.on{background:var(--blue);border-color:var(--blue);color:#fff}
-
 .mr{display:flex;align-items:center;height:var(--row-h);padding:0 6px;cursor:pointer;border-left:2px solid transparent;font-size:10px}
 .mr:hover{background:rgba(255,255,255,.04)}.mr.on{background:rgba(10,132,255,.15);border-left-color:var(--blue)}
 .mr-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0;margin-right:5px}
 .mr-id{font-family:'SF Mono',Menlo,Consolas,monospace;font-size:10px;color:var(--blue);width:60px;flex-shrink:0;font-weight:600}
 .mr-name{flex:1;font-size:10px;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .mr-cnt{font-size:9px;color:var(--text3);flex-shrink:0}
-
 .sr{display:flex;align-items:center;height:20px;padding:0 6px 0 16px;cursor:pointer;font-size:9px;gap:4px}
 .sr:hover{background:rgba(255,255,255,.04)}
 .sr-cb{width:12px;height:12px;border-radius:2px;border:1px solid var(--border);background:var(--bg3);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:8px}
 .sr-cb.on{background:var(--blue);border-color:var(--blue);color:#fff}
-.sr-dot{width:4px;height:4px;border-radius:50%;flex-shrink:0}
-.sr-name{flex:1;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.sr-val{font-family:'SF Mono',Menlo,Consolas,monospace;color:var(--green);flex-shrink:0;margin-left:2px;font-size:9px}
 .sr-drag{width:14px;height:14px;display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:8px;cursor:grab;flex-shrink:0;opacity:.4;user-select:none;-webkit-user-select:none}
 .sr-drag:hover{opacity:1;color:var(--text2)}
 .sr.dragging{opacity:.4;background:rgba(10,132,255,.1)}
 .sr.drag-over{border-top:2px solid var(--blue)}
-
-/* 右侧 */
+.sr-dot{width:4px;height:4px;border-radius:50%;flex-shrink:0}
+.sr-name{flex:1;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sr-val{font-family:'SF Mono',Menlo,Consolas,monospace;color:var(--green);flex-shrink:0;margin-left:2px;font-size:9px}
 .right{flex:1;display:flex;flex-direction:column;overflow:hidden}
 .vtabs{display:flex;background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0}
 .vtab{padding:5px 12px;font-size:10px;color:var(--text3);cursor:pointer;border-bottom:2px solid transparent}
 .vtab.on{color:var(--blue);border-bottom-color:var(--blue)}
 .vbody{flex:1;overflow:hidden}
 .vpanel{display:none;height:100%}.vpanel.on{display:flex;flex-direction:column}
-
-/* 波形工具栏 */
 .chart-toolbar{display:flex;gap:3px;padding:4px 6px;background:var(--bg2);border-bottom:1px solid var(--border);flex-shrink:0;align-items:center;flex-wrap:wrap}
-
-/* 波形区 */
 .cw{flex:1;overflow-y:auto;position:relative;background:#171717;user-select:none;-webkit-user-select:none}
-
-/* 合并波形图(多信号同坐标轴) */
+/* 合并波形 */
 .merged-chart{position:relative;border-bottom:1px solid var(--border)}
 .merged-chart-hdr{display:flex;align-items:center;height:22px;padding:0 6px;background:var(--bg3);gap:6px;flex-wrap:wrap}
 .merged-chart-hdr .mh-title{font-size:9px;color:var(--text3)}
@@ -104,12 +82,21 @@ button{font-family:inherit;cursor:pointer}input,select{font-family:inherit}
 .merged-chart-legend .leg{display:flex;align-items:center;gap:3px;font-size:8px;cursor:pointer;padding:1px 4px;border-radius:2px}
 .merged-chart-legend .leg:hover{background:rgba(255,255,255,.06)}
 .merged-chart-legend .leg-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
-.merged-chart-legend .leg-name{color:var(--text2)}
-.merged-chart-legend .leg.off{opacity:.35}
-.merged-cv{height:240px;position:relative}
+.merged-chart-legend .leg-name{color:var(--text2)}.merged-chart-legend .leg.off{opacity:.35}
+.merged-cv{height:280px;position:relative}
 .merged-cv canvas{display:block;width:100%;height:100%;cursor:crosshair}
-
-/* 独立信号波形行 */
+/* 坐标轴组 */
+.axis-group{margin-bottom:2px;border-bottom:1px solid var(--border)}
+.axis-group-hdr{display:flex;align-items:center;height:20px;padding:0 6px;background:var(--bg2);gap:4px;font-size:9px}
+.axis-group-hdr .ag-title{color:var(--text3)}
+.axis-group-hdr .ag-sigs{display:flex;gap:3px;flex-wrap:wrap}
+.axis-group-hdr .ag-sig-chip{padding:0 4px;border-radius:2px;font-size:8px;cursor:pointer;opacity:.8}
+.axis-group-hdr .ag-sig-chip:hover{opacity:1}
+.axis-group-hdr .ag-del{width:14px;height:14px;border-radius:2px;border:none;background:transparent;color:var(--text3);font-size:9px;cursor:pointer;margin-left:auto}
+.axis-group-hdr .ag-del:hover{color:var(--red)}
+.axis-group-hdr .ag-add{padding:0 4px;border-radius:2px;border:1px dashed var(--border);background:transparent;color:var(--text3);font-size:8px;cursor:pointer}
+.axis-group-hdr .ag-add:hover{border-color:var(--blue);color:var(--blue)}
+/* 独立波形行 */
 .sig-chart{border-bottom:1px solid var(--border);position:relative}
 .sig-chart-hdr{display:flex;align-items:center;height:20px;padding:0 6px;background:var(--bg3);gap:4px}
 .sig-chart-hdr .sn{font-size:9px;font-weight:600}.sig-chart-hdr .su{font-size:8px;color:var(--text3)}
@@ -118,18 +105,18 @@ button{font-family:inherit;cursor:pointer}input,select{font-family:inherit}
 .sig-chart-hdr .sdel:hover{color:var(--red);background:rgba(255,69,58,.15)}
 .sig-chart-cv{height:80px;position:relative}
 .sig-chart-cv canvas{display:block;width:100%;height:100%;cursor:crosshair}
-
-/* 光标信息 */
-.cursor-info{position:sticky;bottom:0;left:0;right:0;height:22px;background:rgba(28,28,30,.95);border-top:1px solid var(--border);display:flex;align-items:center;padding:0 8px;font-size:9px;font-family:'SF Mono',Menlo,Consolas,monospace;z-index:11;gap:12px;flex-shrink:0}
-.cursor-info .ct{color:#FFD60A}.cursor-info .ct2{color:#FF375F}.cursor-info .cd{color:var(--green);font-weight:600}
-
-/* Trace */
+/* 光标信息栏 */
+.cursor-bar{position:sticky;bottom:0;left:0;right:0;background:rgba(28,28,30,.97);border-top:1px solid var(--border);padding:4px 8px;font-size:9px;font-family:'SF Mono',Menlo,Consolas,monospace;z-index:11;flex-shrink:0;display:flex;flex-wrap:wrap;gap:6px;align-items:center;max-height:60px;overflow-y:auto}
+.cursor-bar .ct{color:#FFD60A}.cursor-bar .ct2{color:#FF375F}.cursor-bar .cd{color:var(--green);font-weight:600}
+.cursor-bar .cv-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.cursor-bar .cv-sig{display:flex;gap:3px;align-items:center}
+.cursor-bar .cv-dot{width:5px;height:5px;border-radius:50%}
+.cursor-bar .cv-val{font-size:9px}
 .trace-wrap{flex:1;overflow:auto}
 .trace-tbl{width:100%;border-collapse:collapse;font-size:10px}
 .trace-tbl th{background:var(--bg3);padding:3px 8px;text-align:left;color:var(--text3);font-size:8px;text-transform:uppercase;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:1}
 .trace-tbl td{padding:2px 8px;border-bottom:1px solid rgba(255,255,255,.02);font-family:'SF Mono',Menlo,Consolas,monospace;font-size:9px;height:var(--row-h);white-space:nowrap}
 .trace-tbl tr:hover td{background:rgba(255,255,255,.03)}
-
 .pw{flex:1;overflow-y:auto;padding:6px}
 .pc{border:1px solid var(--border);border-radius:3px;margin-bottom:4px;background:var(--bg2);overflow:hidden}
 .pc-h{display:flex;align-items:center;padding:5px 8px;background:var(--bg3);border-bottom:1px solid var(--border);gap:6px;font-size:11px}
@@ -137,10 +124,8 @@ button{font-family:inherit;cursor:pointer}input,select{font-family:inherit}
 table.pt{width:100%;border-collapse:collapse;font-size:9px}
 table.pt th{padding:3px 6px;text-align:left;color:var(--text3);font-size:7px;text-transform:uppercase;border-bottom:1px solid var(--border);background:var(--bg3)}
 table.pt td{padding:2px 6px;border-bottom:1px solid rgba(255,255,255,.02)}
-
 .sbar{height:22px;background:var(--bg2);border-top:1px solid var(--border);display:flex;align-items:center;padding:0 8px;font-size:9px;color:var(--text3);flex-shrink:0;gap:10px}
 .sbar .r{margin-left:auto;display:flex;gap:8px}.sbar .v{color:var(--blue);font-weight:600}
-
 .empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--text3);gap:3px}
 .empty .ico{font-size:32px;opacity:.3}.empty .t1{font-size:11px}.empty .t2{font-size:9px;color:var(--text3)}
 .dm{position:fixed;inset:0;background:rgba(10,132,255,.12);border:2px dashed var(--blue);z-index:999;display:none;align-items:center;justify-content:center}
@@ -155,60 +140,44 @@ table.pt td{padding:2px 6px;border-bottom:1px solid rgba(255,255,255,.02)}
 </style>
 </head>
 <body>
-<div class="hdr">
-  <div class="hdr-logo"><span class="ic">◈</span> CAN Mac Analyzer</div>
-  <div class="hdr-right"><span class="v" id="hV"></span><span id="hD"></span></div>
-</div>
+<div class="hdr"><div class="hdr-logo"><span class="ic">◈</span> CAN Mac Analyzer</div><div class="hdr-right"><span class="v" id="hV"></span><span id="hD"></span></div></div>
 <div class="tbar">
-  <button class="tb" onclick="document.getElementById('fI').click()">📂 打开</button>
-  <input type="file" id="fI" accept=".asc,.blf,.dbc,.txt,.csv" multiple style="display:none">
-  <div class="tb-sep"></div>
-  <button class="tb on" id="bGo" onclick="doParse()" disabled>▶ 解析</button>
-  <button class="tb" onclick="doClear()">✕ 清除</button>
-  <div class="tb-sep"></div>
-  <button class="tb" id="bCsv" onclick="doExport()" disabled>⬇ CSV</button>
+  <button class="tb" onclick="document.getElementById('fI').click()">📂 打开</button><input type="file" id="fI" accept=".asc,.blf,.dbc,.txt,.csv" multiple style="display:none">
+  <div class="tb-sep"></div><button class="tb on" id="bGo" onclick="doParse()" disabled>▶ 解析</button><button class="tb" onclick="doClear()">✕ 清除</button>
+  <div class="tb-sep"></div><button class="tb" id="bCsv" onclick="doExport()" disabled>⬇ CSV</button>
   <div class="tb-info"><span>帧 <b id="sF">0</b></span><span>ID <b id="sI">0</b></span><span>信号 <b id="sS">0</b></span><span>时长 <b id="sD">0s</b></span></div>
 </div>
 <div class="main">
   <div class="left">
     <div class="left-search"><input id="sBox" placeholder="🔍 搜索..." oninput="doFilter()"></div>
     <div class="ch-filter" id="chBar"><span class="ch-label">CH:</span></div>
-    <div class="sort-bar" id="sortBar"><span class="sl">排序:</span>
-      <button class="sort-btn on" onclick="setSort(this,'id')">ID↑</button>
-      <button class="sort-btn" onclick="setSort(this,'name')">名称</button>
-      <button class="sort-btn" onclick="setSort(this,'cnt')">帧数↓</button>
-    </div>
+    <div class="sort-bar" id="sortBar"><span class="sl">排序:</span><button class="sort-btn on" onclick="setSort(this,'id')">ID↑</button><button class="sort-btn" onclick="setSort(this,'name')">名称</button><button class="sort-btn" onclick="setSort(this,'cnt')">帧数↓</button></div>
     <div class="left-tabs"><div class="left-tab on" onclick="tabSide(this,'msg')">报文</div><div class="left-tab" onclick="tabSide(this,'sig')">信号</div></div>
     <div class="left-list" id="pList"><div class="empty" style="height:200px"><div class="ico">📋</div><div class="t2">打开文件开始</div></div></div>
   </div>
   <div class="right">
-    <div class="vtabs">
-      <div class="vtab on" onclick="tabView(this,'chart')">📈 波形</div>
-      <div class="vtab" onclick="tabView(this,'trace')">📋 Trace</div>
-      <div class="vtab" onclick="tabView(this,'proto')">📖 协议</div>
-    </div>
+    <div class="vtabs"><div class="vtab on" onclick="tabView(this,'chart')">📈 波形</div><div class="vtab" onclick="tabView(this,'trace')">📋 Trace</div><div class="vtab" onclick="tabView(this,'proto')">📖 协议</div></div>
     <div class="vbody">
       <div class="vpanel on" id="vChart">
         <div class="chart-toolbar">
-          <button class="tb on" id="bCursorOff" onclick="setCursorMode('off')">光标关</button>
-          <button class="tb" id="bCursor1" onclick="setCursorMode('single')">单标尺</button>
-          <button class="tb" id="bCursor2" onclick="setCursorMode('dual')">双标尺</button>
+          <button class="tb on" id="bCurOff" onclick="setCursorMode('off')">光标关</button>
+          <button class="tb" id="bCur1" onclick="setCursorMode('single')">单标尺</button>
+          <button class="tb" id="bCur2" onclick="setCursorMode('dual')">双标尺</button>
           <div class="tb-sep"></div>
           <button class="tb" onclick="fitAll()">Fit All</button>
           <button class="tb" onclick="fitY()">Fit Y</button>
           <div class="tb-sep"></div>
-          <button class="tb" onclick="resetX()">重置X</button>
-          <button class="tb" onclick="resetY()">重置Y</button>
+          <button class="tb" onclick="resetX()">重置X</button><button class="tb" onclick="resetY()">重置Y</button>
           <div class="tb-sep"></div>
           <button class="tb on" id="bMerge" onclick="toggleMerge()">合并坐标</button>
+          <button class="tb" onclick="addAxisGroup()">+ 坐标轴</button>
           <div class="tb-sep"></div>
-          <button class="tb" onclick="clearCursors()">清光标</button>
-          <button class="tb" onclick="removeAllSignals()">清信号</button>
+          <button class="tb" onclick="clearCursors()">清光标</button><button class="tb" onclick="removeAllSignals()">清信号</button>
         </div>
         <div class="cw" id="chartArea">
           <div class="empty" id="chartEmpty"><div class="ico">📈</div><div class="t1">暂无波形</div><div class="t2">在左侧勾选信号量添加到波形 · 滚轮缩放 · 拖动平移</div></div>
           <div id="sigCharts"></div>
-          <div class="cursor-info" id="cursorInfo" style="display:none"></div>
+          <div class="cursor-bar" id="cursorBar" style="display:none"></div>
         </div>
       </div>
       <div class="vpanel" id="vTrace"><div class="trace-wrap"><table class="trace-tbl"><thead><tr><th>#</th><th>时间</th><th>CH</th><th>ID</th><th>DLC</th><th>Data</th><th>周期</th><th>信号</th></tr></thead><tbody id="tTb"></tbody></table></div></div>
@@ -221,448 +190,255 @@ table.pt td{padding:2px 6px;border-bottom:1px solid rgba(255,255,255,.02)}
 <div class="mb" id="mBg"><div class="mm"><h3 id="mT">提示</h3><p id="mB"></p><div class="mm-btns"><button class="pri" onclick="mClose()">确定</button></div></div></div>
 
 <script>
-/* ============================================================
- * CAN Mac Analyzer v4 - 缩放拖动 + 合并坐标 + 排序
- * ⚠️ 任何代码改动都必须同步更新文件顶部的 VERSION 和 BUILD_DATE
- * ============================================================ */
-
-// === 版本 ===
+/* ⚠️ 任何代码改动都必须同步更新文件顶部的 VERSION 和 BUILD_DATE */
 (function(){document.getElementById('hV').textContent=APP_VERSION;document.getElementById('hD').textContent=BUILD_DATE;document.getElementById('stV').textContent='CAN Mac '+APP_VERSION;document.getElementById('stD').textContent=BUILD_DATE;})();
 
-// === 状态 ===
-var S={asc:[],dbc:[],msgs:{},defs:{},frames:[],sel:null,ci:0,parsed:false,channels:{}};
+var S={asc:[],dbc:[],msgs:{},defs:{},frames:[],sel:null,parsed:false,channels:{}};
 var C=['#0A84FF','#FF453A','#30D158','#FF9F0A','#BF5AF2','#64D2FF','#FF375F','#FFD60A','#5856D6','#34C759','#FF6482','#AC8E68','#E5E5EA'];
-var WAVE={selectedSigs:[],cursorMode:'off',cursor1:null,cursor2:null,xRange:null,yRanges:{},mergeMode:true,hiddenLegs:{},sortMode:'id'};
-// 缩放/拖动状态
+// axisGroups: [{id:1, color:'#0A84FF', skeys:['id::sig',...]}]
+var WAVE={selectedSigs:[],cursorMode:'off',cursor1:null,cursor2:null,xRange:null,yRanges:{},mergeMode:true,hiddenLegs:{},sortMode:'id',axisGroups:[]};
 var ZOOM={dragging:false,dragStartX:0,dragStartT0:0,dragStartT1:0,canvasParams:null};
+var CURSOR_DRAG={active:false,which:null,startX:0};
 
-// === DBC解析 ===
-function parseDBC(t){
-    var d={},lines=t.split('\n'),cur=null,vt={};
-    for(var i=0;i<lines.length;i++){
-        var l=lines[i].trim();if(!l||l[0]==='/')continue;
-        var bm=l.match(/^BO_\s+(\d+)\s+(\w+)\s*:\s*(\d+)\s+(\w+)/);
-        if(bm){var id=parseInt(bm[1]);if(id>=0x80000000)id-=0x80000000;cur={id:id,name:bm[2],dlc:parseInt(bm[3]),sender:bm[4],sigs:[],cm:''};d[id]=cur;continue;}
-        var sm=l.match(/^SG_\s+(\w+)\s*:\s*(\d+)\|(\d+)@([01])([+-])\s*\(([^,]+),([^)]+)\)\s*\[([^|]+)\|([^\]]+)\]\s*"([^"]*)"\s*(.*)/);
-        if(sm&&cur){cur.sigs.push({n:sm[1],sb:parseInt(sm[2]),bl:parseInt(sm[3]),bo:parseInt(sm[4]),sg:sm[5],fc:parseFloat(sm[6]),of:parseFloat(sm[7]),mn:parseFloat(sm[8]),mx:parseFloat(sm[9]),u:sm[10],rx:sm[11].trim()});continue;}
-        var vm=l.match(/^VAL_\s+(\d+)\s+(\w+)\s+(.*?)\s*;/);
-        if(vm){var mi=parseInt(vm[1]);if(mi>=0x80000000)mi-=0x80000000;var vp=vm[3].match(/(-?\d+)\s+"([^"]+)"/g);if(vp){var o={};for(var j=0;j<vp.length;j++){var pm=vp[j].match(/(-?\d+)\s+"([^"]+)"/);if(pm)o[parseInt(pm[1])]=pm[2];}if(!vt[mi])vt[mi]={};vt[mi][vm[2]]=o;}continue;}
-        var cm=l.match(/^CM_\s+BO_\s+(\d+)\s+"([^"]*)"/);
-        if(cm){var ci=parseInt(cm[1]);if(ci>=0x80000000)ci-=0x80000000;if(d[ci])d[ci].cm=cm[2];}
-    }
-    for(var k in vt)if(d[k])d[k].vt=vt[k];return d;
-}
+// === DBC ===
+function parseDBC(t){var d={},lines=t.split('\n'),cur=null,vt={};for(var i=0;i<lines.length;i++){var l=lines[i].trim();if(!l||l[0]==='/')continue;var bm=l.match(/^BO_\s+(\d+)\s+(\w+)\s*:\s*(\d+)\s+(\w+)/);if(bm){var id=parseInt(bm[1]);if(id>=0x80000000)id-=0x80000000;cur={id:id,name:bm[2],dlc:parseInt(bm[3]),sender:bm[4],sigs:[],cm:''};d[id]=cur;continue;}var sm=l.match(/^SG_\s+(\w+)\s*:\s*(\d+)\|(\d+)@([01])([+-])\s*\(([^,]+),([^)]+)\)\s*\[([^|]+)\|([^\]]+)\]\s*"([^"]*)"\s*(.*)/);if(sm&&cur){cur.sigs.push({n:sm[1],sb:parseInt(sm[2]),bl:parseInt(sm[3]),bo:parseInt(sm[4]),sg:sm[5],fc:parseFloat(sm[6]),of:parseFloat(sm[7]),mn:parseFloat(sm[8]),mx:parseFloat(sm[9]),u:sm[10],rx:sm[11].trim()});continue;}var vm=l.match(/^VAL_\s+(\d+)\s+(\w+)\s+(.*?)\s*;/);if(vm){var mi=parseInt(vm[1]);if(mi>=0x80000000)mi-=0x80000000;var vp=vm[3].match(/(-?\d+)\s+"([^"]+)"/g);if(vp){var o={};for(var j=0;j<vp.length;j++){var pm=vp[j].match(/(-?\d+)\s+"([^"]+)"/);if(pm)o[parseInt(pm[1])]=pm[2];}if(!vt[mi])vt[mi]={};vt[mi][vm[2]]=o;}continue;}}for(var k in vt)if(d[k])d[k].vt=vt[k];return d;}
 
-// === ASC解析 ===
-function parseASC(c){
-    var ls=c.split(/\r?\n/),msgs=[],sk=0,bt=0,hb=false;
-    for(var i=0;i<ls.length;i++){
-        var l=ls[i].trim();if(l.length<10){sk++;continue}
-        var c0=l.charCodeAt(0);if(c0<45||c0>57){sk++;continue}
-        var p=l.split(/\s+/);if(p.length<7){sk++;continue}
-        var ts=parseFloat(p[0]);if(isNaN(ts)){sk++;continue}
-        var ch=parseInt(p[1],10);if(isNaN(ch))ch=1;
-        var idStr=p[2];if(idStr.slice(-1)==='x'||idStr.slice(-1)==='X')idStr=idStr.slice(0,-1);
-        var id=parseInt(idStr,16);if(isNaN(id)){sk++;continue}
-        var di=-1;for(var j=3;j<p.length;j++){if(p[j]==='d'||p[j]==='D'){di=j;break}}
-        if(di<0||di+1>=p.length){sk++;continue}
-        var dlc=parseInt(p[di+1],10);if(isNaN(dlc)||dlc<0||dlc>64){sk++;continue}
-        var data=[];for(var k=di+2;k<p.length&&data.length<dlc;k++){var v=parseInt(p[k],16);if(!isNaN(v))data.push(v);}
-        while(data.length<dlc)data.push(0);
-        if(!hb){bt=ts;hb=true;}msgs.push({t:ts-bt,ch:ch,id:id,dl:dlc,d:data});
-    }
-    msgs.sort(function(a,b){return a.t-b.t});return msgs;
-}
+// === ASC ===
+function parseASC(c){var ls=c.split(/\r?\n/),msgs=[],sk=0,bt=0,hb=false;for(var i=0;i<ls.length;i++){var l=ls[i].trim();if(l.length<10){sk++;continue}var c0=l.charCodeAt(0);if(c0<45||c0>57){sk++;continue}var p=l.split(/\s+/);if(p.length<7){sk++;continue}var ts=parseFloat(p[0]);if(isNaN(ts)){sk++;continue}var ch=parseInt(p[1],10);if(isNaN(ch))ch=1;var idStr=p[2];if(idStr.slice(-1)==='x'||idStr.slice(-1)==='X')idStr=idStr.slice(0,-1);var id=parseInt(idStr,16);if(isNaN(id)){sk++;continue}var di=-1;for(var j=3;j<p.length;j++){if(p[j]==='d'||p[j]==='D'){di=j;break}}if(di<0||di+1>=p.length){sk++;continue}var dlc=parseInt(p[di+1],10);if(isNaN(dlc)||dlc<0||dlc>64){sk++;continue}var data=[];for(var k=di+2;k<p.length&&data.length<dlc;k++){var v=parseInt(p[k],16);if(!isNaN(v))data.push(v);}while(data.length<dlc)data.push(0);if(!hb){bt=ts;hb=true;}msgs.push({t:ts-bt,ch:ch,id:id,dl:dlc,d:data});}msgs.sort(function(a,b){return a.t-b.t});return msgs;}
 
-// === BLF解析 ===
-function parseBLF(buf){
-    var u8=new Uint8Array(buf),len=buf.byteLength,dv=new DataView(buf);
-    if(len<144)return[];
-    if(String.fromCharCode(u8[0],u8[1],u8[2],u8[3])!=='LOGG')return[];
-    var pos=144,msgs=[];
-    while(pos+16<=len){
-        if(String.fromCharCode(u8[pos],u8[pos+1],u8[pos+2],u8[pos+3])!=='LOBJ'){pos++;continue}
-        var hdrSize=dv.getUint16(pos+4,true),objSize=dv.getUint32(pos+8,true),objType=dv.getUint32(pos+12,true);
-        if(objSize<16||objSize>100000000){pos++;continue}
-        if(objType===10){
-            var raw=null;
-            if(pos+32<=len){var method=dv.getUint16(pos+16,true);var cd=buf.slice(pos+32,pos+objSize);
-                if(method===0)raw=new Uint8Array(cd);
-                else if((method===2||method===1)&&typeof pako!=='undefined'){try{raw=pako.inflate(new Uint8Array(cd))}catch(e){try{raw=pako.inflate(new Uint8Array(buf.slice(pos+16,pos+objSize)))}catch(e2){raw=null}}}}
-            if(!raw||raw.length===0){var ad=new Uint8Array(buf.slice(pos+16,pos+objSize));if(ad.length>16)raw=ad;}
-            if(raw&&raw.length>16){var inner=blfContainer(raw);if(inner.length>0)msgs=msgs.concat(inner);}
-        }else{blfObj(dv,u8,msgs,objType,pos+hdrSize,len);}
-        pos+=objSize+(objSize%4);
-    }
-    return msgs;
-}
-function blfContainer(raw){
-    var msgs=[],pos=0,dv=new DataView(raw.buffer,raw.byteOffset,raw.byteLength);
-    while(pos+16<=raw.length){
-        if(String.fromCharCode(raw[pos],raw[pos+1],raw[pos+2],raw[pos+3])!=='LOBJ'){pos++;continue}
-        var hdrSize=dv.getUint16(pos+4,true),objSize=dv.getUint32(pos+8,true),objType=dv.getUint32(pos+12,true);
-        if(objSize<16||pos+objSize>raw.length){pos++;continue}
-        blfObj(dv,raw,msgs,objType,pos+hdrSize,raw.length);pos+=objSize+(objSize%4);
-    }
-    return msgs;
-}
-function blfObj(dv,u8,msgs,objType,dp,len){
-    if(objType===1&&dp+24<=len){var ts=dv.getFloat64(dp,true),ch=u8[dp+8]|0,dlc=u8[dp+10]|0,id=dv.getUint32(dp+12,true);if(id>=0x80000000)id-=0x80000000;var d=[];for(var j=0;j<dlc&&j<8;j++)d.push(u8[dp+16+j]|0);msgs.push({t:ts/1e9,id:id,ch:ch,dl:dlc,d:d});}
-}
+// === BLF ===
+function parseBLF(buf){var u8=new Uint8Array(buf),len=buf.byteLength,dv=new DataView(buf);if(len<144)return[];if(String.fromCharCode(u8[0],u8[1],u8[2],u8[3])!=='LOGG')return[];var pos=144,msgs=[];while(pos+16<=len){if(String.fromCharCode(u8[pos],u8[pos+1],u8[pos+2],u8[pos+3])!=='LOBJ'){pos++;continue}var hdrSize=dv.getUint16(pos+4,true),objSize=dv.getUint32(pos+8,true),objType=dv.getUint32(pos+12,true);if(objSize<16||objSize>100000000){pos++;continue}if(objType===10){var raw=null;if(pos+32<=len){var method=dv.getUint16(pos+16,true);var cd=buf.slice(pos+32,pos+objSize);if(method===0)raw=new Uint8Array(cd);else if((method===2||method===1)&&typeof pako!=='undefined'){try{raw=pako.inflate(new Uint8Array(cd))}catch(e){try{raw=pako.inflate(new Uint8Array(buf.slice(pos+16,pos+objSize)))}catch(e2){raw=null}}}}if(!raw||raw.length===0){var ad=new Uint8Array(buf.slice(pos+16,pos+objSize));if(ad.length>16)raw=ad;}if(raw&&raw.length>16){var inner=blfC(raw);if(inner.length>0)msgs=msgs.concat(inner);}}else{blfO(dv,u8,msgs,objType,pos+hdrSize,len);}pos+=objSize+(objSize%4);}return msgs;}
+function blfC(raw){var msgs=[],pos=0,dv=new DataView(raw.buffer,raw.byteOffset,raw.byteLength);while(pos+16<=raw.length){if(String.fromCharCode(raw[pos],raw[pos+1],raw[pos+2],raw[pos+3])!=='LOBJ'){pos++;continue}var hdrSize=dv.getUint16(pos+4,true),objSize=dv.getUint32(pos+8,true),objType=dv.getUint32(pos+12,true);if(objSize<16||pos+objSize>raw.length){pos++;continue}blfO(dv,raw,msgs,objType,pos+hdrSize,raw.length);pos+=objSize+(objSize%4);}return msgs;}
+function blfO(dv,u8,msgs,objType,dp,len){if(objType===1&&dp+24<=len){var ts=dv.getFloat64(dp,true),ch=u8[dp+8]|0,dlc=u8[dp+10]|0,id=dv.getUint32(dp+12,true);if(id>=0x80000000)id-=0x80000000;var d=[];for(var j=0;j<dlc&&j<8;j++)d.push(u8[dp+16+j]|0);msgs.push({t:ts/1e9,id:id,ch:ch,dl:dlc,d:d});}}
 
-// === 信号解码 ===
 function decSig(data,sig){var raw=extBits(data,sig.sb,sig.bl,sig.bo);if(sig.sg==='-'&&raw>=(1<<(sig.bl-1)))raw-=(1<<sig.bl);return raw*sig.fc+sig.of;}
 function extBits(data,start,len,bo){var val=0;if(bo===1){for(var i=0;i<len;i++){var bp=start+i,bi=bp>>3,bb=bp&7;if(bi<data.length)val|=((data[bi]>>bb)&1)<<i;}}else{for(var i=0;i<len;i++){var bp=start-i;if(bp<0)bp+=8*((-bp>>3)+1);var bi=bp>>3,bb=bp&7;if(bi<data.length)val=(val<<1)|((data[bi]>>bb)&1);}}return val;}
 function sigKey(msgId,sigName){return msgId+'::'+sigName;}
 
-// === 文件处理 ===
+// === 文件 ===
 document.getElementById('fI').addEventListener('change',function(e){procFiles(Array.from(e.target.files));e.target.value='';});
 function procFiles(files){var pend=files.length;if(!pend)return;files.forEach(function(f){var ext=f.name.split('.').pop().toLowerCase();if(ext==='dbc'){var r=new FileReader();r.onload=function(e){var d=parseDBC(e.target.result);for(var k in d)S.defs[k]=d[k];S.dbc.push(f.name);updSt();if(!--pend)ready();};r.readAsText(f);}else if(ext==='asc'||ext==='txt'||ext==='csv'){var r2=new FileReader();r2.onload=function(e){S.frames=S.frames.concat(parseASC(e.target.result));S.asc.push(f.name);updSt();if(!--pend)ready();};r2.readAsText(f);}else if(ext==='blf'){var r3=new FileReader();r3.onload=function(e){S.frames=S.frames.concat(parseBLF(e.target.result));S.asc.push(f.name);updSt();if(!--pend)ready();};r3.readAsArrayBuffer(f);}else{pend--;if(!pend)ready();}});}
 function ready(){document.getElementById('bGo').disabled=!(S.frames.length>0||Object.keys(S.defs).length>0);}
 function updSt(){document.getElementById('stI').textContent='ASC:'+S.asc.length+' DBC:'+S.dbc.length+' 帧:'+S.frames.length;}
-
-// === 拖拽 ===
 var dc=0;document.addEventListener('dragenter',function(e){e.preventDefault();dc++;document.getElementById('dM').classList.add('show');});document.addEventListener('dragleave',function(e){e.preventDefault();dc--;if(dc<=0){document.getElementById('dM').classList.remove('show');dc=0;}});document.addEventListener('dragover',function(e){e.preventDefault();});document.addEventListener('drop',function(e){e.preventDefault();document.getElementById('dM').classList.remove('show');dc=0;if(e.dataTransfer.files.length)procFiles(Array.from(e.dataTransfer.files));});
 
-// === 解析 ===
-function doParse(){
-    if(!S.frames.length&&!Object.keys(S.defs).length){mShow('提示','请先加载文件');return;}
-    S.frames.sort(function(a,b){return a.t-b.t;});S.msgs={};S.channels={};
-    S.frames.forEach(function(f){if(!S.msgs[f.id]){var d=S.defs[f.id];S.msgs[f.id]={id:f.id,name:d?d.name:'Unknown',dl:f.dl,sigs:d?d.sigs:[],vt:d?d.vt:null,frames:[],cnt:0};}S.msgs[f.id].frames.push(f);S.msgs[f.id].cnt++;S.channels[f.ch]=true;});
-    S.parsed=true;document.getElementById('bCsv').disabled=false;
-    var ui=Object.keys(S.msgs).length,sc=0;for(var m in S.msgs)sc+=S.msgs[m].sigs.length;
-    var dur=S.frames.length>0?S.frames[S.frames.length-1].t-S.frames[0].t:0;
-    document.getElementById('sF').textContent=S.frames.length;document.getElementById('sI').textContent=ui;document.getElementById('sS').textContent=sc;document.getElementById('sD').textContent=dur.toFixed(2)+'s';
-    renderChFilter();renderSide();renderProto();renderTrace();
-}
+function doParse(){if(!S.frames.length&&!Object.keys(S.defs).length){mShow('提示','请先加载文件');return;}S.frames.sort(function(a,b){return a.t-b.t;});S.msgs={};S.channels={};S.frames.forEach(function(f){if(!S.msgs[f.id]){var d=S.defs[f.id];S.msgs[f.id]={id:f.id,name:d?d.name:'Unknown',dl:f.dl,sigs:d?d.sigs:[],vt:d?d.vt:null,frames:[],cnt:0};}S.msgs[f.id].frames.push(f);S.msgs[f.id].cnt++;S.channels[f.ch]=true;});S.parsed=true;document.getElementById('bCsv').disabled=false;var ui=Object.keys(S.msgs).length,sc=0;for(var m in S.msgs)sc+=S.msgs[m].sigs.length;var dur=S.frames.length>0?S.frames[S.frames.length-1].t-S.frames[0].t:0;document.getElementById('sF').textContent=S.frames.length;document.getElementById('sI').textContent=ui;document.getElementById('sS').textContent=sc;document.getElementById('sD').textContent=dur.toFixed(2)+'s';renderChFilter();renderSide();renderProto();renderTrace();}
 
-// === 通道筛选 ===
 function renderChFilter(){var bar=document.getElementById('chBar');var chs=Object.keys(S.channels).sort(function(a,b){return parseInt(a)-parseInt(b);});var html='<span class="ch-label">CH:</span><button class="ch-btn on" onclick="toggleCh(this,0)">ALL</button>';chs.forEach(function(ch){html+='<button class="ch-btn on" onclick="toggleCh(this,'+ch+')">'+ch+'</button>';});bar.innerHTML=html;}
 function toggleCh(el,ch){if(ch===0){var allOn=el.classList.contains('on');document.querySelectorAll('.ch-btn').forEach(function(b){if(allOn)b.classList.remove('on');else b.classList.add('on');});}else{el.classList.toggle('on');}renderSide();}
 function getActiveCh(){var btns=document.querySelectorAll('.ch-btn'),chs=[];btns.forEach(function(b,i){if(b.classList.contains('on')){if(i===0){chs=Object.keys(S.channels).map(Number);return;}else chs.push(parseInt(b.textContent));}});return chs.length?chs:Object.keys(S.channels).map(Number);}
 
-// === 排序 ===
 function setSort(el,mode){WAVE.sortMode=mode;document.querySelectorAll('.sort-btn').forEach(function(b){b.classList.remove('on');});el.classList.add('on');renderSide();}
-
-// === 侧边栏 ===
 function renderSide(){var c=document.getElementById('pList');var tb=document.querySelector('.left-tab.on');if(tb&&tb.textContent==='信号')renderSig(c);else renderMsg(c);}
-function renderMsg(c){
-    var sorted=Object.values(S.msgs).sort(function(a,b){
-        if(WAVE.sortMode==='name')return a.name.localeCompare(b.name);
-        if(WAVE.sortMode==='cnt')return b.cnt-a.cnt;return a.id-b.id;
-    });
-    var activeCh=getActiveCh(),h='';
-    sorted.forEach(function(m){
-        var filtered=m.frames.filter(function(f){return activeCh.indexOf(f.ch)>=0;});if(!filtered.length)return;
-        var col=C[m.id%C.length],hx=m.id.toString(16).toUpperCase(),on=S.sel===m.id?' on':'';
-        h+='<div class="mr'+on+'" onclick="selMsg('+m.id+')" data-id="'+m.id+'"><div class="mr-dot" style="background:'+col+'"></div><div class="mr-id">0x'+hx+'</div><div class="mr-name">'+m.name+'</div><div class="mr-cnt">'+filtered.length+'</div></div>';
-        if(S.sel===m.id){m.sigs.forEach(function(sig,idx){var sk=sigKey(m.id,sig.n),isChecked=WAVE.selectedSigs.indexOf(sk)>=0;var sigCol=C[(m.id+idx)%C.length];var skIdx=WAVE.selectedSigs.indexOf(sk);h+='<div class="sr" draggable="false" data-sk="'+sk+'" data-idx="'+skIdx+'"><div class="sr-drag" draggable="true" data-sk="'+sk+'" title="拖动排序">⠿</div><div class="sr-cb'+(isChecked?' on':'')+'" onclick="event.stopPropagation();toggleSig(\''+sk+'\')">'+(isChecked?'✓':'')+'</div><div class="sr-dot" style="background:'+sigCol+'"></div><div class="sr-name">'+sig.n+'</div></div>';});}
-    });
-    c.innerHTML=h||'<div class="empty" style="height:200px"><div class="t2">无匹配报文</div></div>';
-}
-function renderSig(c){
-    var h='',activeCh=getActiveCh();
-    var allSigs=[];
-    for(var mid in S.msgs){var m=S.msgs[mid];if(!m.frames.filter(function(f){return activeCh.indexOf(f.ch)>=0;}).length)continue;
-        m.sigs.forEach(function(sig,idx){allSigs.push({mid:m.id,sig:sig,idx:idx,name:sig.n,msgName:m.name});});}
-    // 信号排序
-    if(WAVE.sortMode==='name')allSigs.sort(function(a,b){return a.name.localeCompare(b.name);});
-    else allSigs.sort(function(a,b){return a.mid-b.mid||a.idx-b.idx;});
-    allSigs.forEach(function(s){
-        var sk=sigKey(s.mid,s.sig.n),isChecked=WAVE.selectedSigs.indexOf(sk)>=0;var col=C[(s.mid+s.idx)%C.length];var skIdx=WAVE.selectedSigs.indexOf(sk);
-        h+='<div class="sr" draggable="false" data-sk="'+sk+'" data-idx="'+skIdx+'"><div class="sr-drag" draggable="true" data-sk="'+sk+'" title="拖动排序">⠿</div><div class="sr-cb'+(isChecked?' on':'')+'" onclick="toggleSig(\''+sk+'\')">'+(isChecked?'✓':'')+'</div><div class="sr-dot" style="background:'+col+'"></div><div class="sr-name">'+s.sig.n+'</div><div class="sr-val">0x'+s.mid.toString(16).toUpperCase()+'</div></div>';
-    });
-    c.innerHTML=h||'<div class="empty" style="height:200px"><div class="t2">无信号</div></div>';
-}
+function renderMsg(c){var sorted=Object.values(S.msgs).sort(function(a,b){if(WAVE.sortMode==='name')return a.name.localeCompare(b.name);if(WAVE.sortMode==='cnt')return b.cnt-a.cnt;return a.id-b.id;});var activeCh=getActiveCh(),h='';sorted.forEach(function(m){var filtered=m.frames.filter(function(f){return activeCh.indexOf(f.ch)>=0;});if(!filtered.length)return;var col=C[m.id%C.length],hx=m.id.toString(16).toUpperCase(),on=S.sel===m.id?' on':'';h+='<div class="mr'+on+'" onclick="selMsg('+m.id+')" data-id="'+m.id+'"><div class="mr-dot" style="background:'+col+'"></div><div class="mr-id">0x'+hx+'</div><div class="mr-name">'+m.name+'</div><div class="mr-cnt">'+filtered.length+'</div></div>';if(S.sel===m.id){m.sigs.forEach(function(sig,idx){var sk=sigKey(m.id,sig.n),isChecked=WAVE.selectedSigs.indexOf(sk)>=0;var sigCol=C[(m.id+idx)%C.length];h+='<div class="sr" data-sk="'+sk+'"><div class="sr-drag" draggable="true" data-sk="'+sk+'" title="拖动排序">⠿</div><div class="sr-cb'+(isChecked?' on':'')+'" onclick="event.stopPropagation();toggleSig(\''+sk+'\')">'+(isChecked?'✓':'')+'</div><div class="sr-dot" style="background:'+sigCol+'"></div><div class="sr-name">'+sig.n+'</div></div>';});}});c.innerHTML=h||'<div class="empty" style="height:200px"><div class="t2">无匹配报文</div></div>';}
+function renderSig(c){var h='',activeCh=getActiveCh(),allSigs=[];for(var mid in S.msgs){var m=S.msgs[mid];if(!m.frames.filter(function(f){return activeCh.indexOf(f.ch)>=0;}).length)continue;m.sigs.forEach(function(sig,idx){allSigs.push({mid:m.id,sig:sig,idx:idx});});}if(WAVE.sortMode==='name')allSigs.sort(function(a,b){return a.sig.n.localeCompare(b.sig.n);});else allSigs.sort(function(a,b){return a.mid-b.mid||a.idx-b.idx;});allSigs.forEach(function(s){var sk=sigKey(s.mid,s.sig.n),isChecked=WAVE.selectedSigs.indexOf(sk)>=0;var col=C[(s.mid+s.idx)%C.length];h+='<div class="sr" data-sk="'+sk+'"><div class="sr-drag" draggable="true" data-sk="'+sk+'" title="拖动排序">⠿</div><div class="sr-cb'+(isChecked?' on':'')+'" onclick="toggleSig(\''+sk+'\')">'+(isChecked?'✓':'')+'</div><div class="sr-dot" style="background:'+col+'"></div><div class="sr-name">'+s.sig.n+'</div><div class="sr-val">0x'+s.mid.toString(16).toUpperCase()+'</div></div>';});c.innerHTML=h||'<div class="empty" style="height:200px"><div class="t2">无信号</div></div>';}
 function doFilter(){var q=document.getElementById('sBox').value.toLowerCase();document.querySelectorAll('#pList .mr,#pList .sr').forEach(function(el){el.style.display=el.textContent.toLowerCase().indexOf(q)>=0?'':'none';});}
 function tabSide(el){document.querySelectorAll('.left-tab').forEach(function(t){t.classList.remove('on');});el.classList.add('on');renderSide();}
 function selMsg(id){S.sel=id;renderSide();}
 function toggleSig(sk){var idx=WAVE.selectedSigs.indexOf(sk);if(idx>=0){WAVE.selectedSigs.splice(idx,1);delete WAVE.yRanges[sk];}else{WAVE.selectedSigs.push(sk);}renderSide();renderWaveforms();}
-function removeAllSignals(){WAVE.selectedSigs=[];WAVE.yRanges={};renderSide();renderWaveforms();}
+function removeAllSignals(){WAVE.selectedSigs=[];WAVE.yRanges={};WAVE.axisGroups=[];renderSide();renderWaveforms();}
 function toggleMerge(){WAVE.mergeMode=!WAVE.mergeMode;document.getElementById('bMerge').classList.toggle('on',WAVE.mergeMode);renderWaveforms();}
+function getSigData(sk){var parts=sk.split('::'),msgId=parseInt(parts[0]),sigName=parts[1];var msg=S.msgs[msgId];if(!msg)return null;var sig=null;for(var j=0;j<msg.sigs.length;j++){if(msg.sigs[j].n===sigName){sig=msg.sigs[j];break;}}if(!sig)return null;var activeCh=getActiveCh();var frames=msg.frames.filter(function(f){return activeCh.indexOf(f.ch)>=0;});return{msg:msg,sig:sig,frames:frames,col:C[(msgId+msg.sigs.indexOf(sig))%C.length]};}
 
-// === 获取信号数据点 ===
-function getSigData(sk){
-    var parts=sk.split('::'),msgId=parseInt(parts[0]),sigName=parts[1];
-    var msg=S.msgs[msgId];if(!msg)return null;
-    var sig=null;for(var j=0;j<msg.sigs.length;j++){if(msg.sigs[j].n===sigName){sig=msg.sigs[j];break;}}
-    if(!sig)return null;
-    var activeCh=getActiveCh();var frames=msg.frames.filter(function(f){return activeCh.indexOf(f.ch)>=0;});
-    return{msg:msg,sig:sig,frames:frames,col:C[(msgId+msg.sigs.indexOf(sig))%C.length]};
+// === 信号拖拽排序 ===
+var DRAG={sk:null};
+document.addEventListener('dragstart',function(e){var h=e.target.closest('.sr-drag');if(!h)return;DRAG.sk=h.dataset.sk;var row=h.closest('.sr');if(row)row.classList.add('dragging');e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',DRAG.sk);if(row)e.dataTransfer.setDragImage(row,20,10);});
+document.addEventListener('dragover',function(e){if(!DRAG.sk)return;e.preventDefault();e.dataTransfer.dropEffect='move';var row=e.target.closest('.sr');document.querySelectorAll('.sr.drag-over').forEach(function(el){el.classList.remove('drag-over');});if(row&&row.dataset.sk!==DRAG.sk)row.classList.add('drag-over');});
+document.addEventListener('drop',function(e){e.preventDefault();document.querySelectorAll('.sr.drag-over,.sr.dragging').forEach(function(el){el.classList.remove('drag-over','dragging');});if(!DRAG.sk)return;var targetRow=e.target.closest('.sr');if(!targetRow||!targetRow.dataset.sk){DRAG.sk=null;return;}var targetSk=targetRow.dataset.sk;if(targetSk===DRAG.sk){DRAG.sk=null;return;}var fromIdx=WAVE.selectedSigs.indexOf(DRAG.sk);var toIdx=WAVE.selectedSigs.indexOf(targetSk);if(fromIdx<0||toIdx<0){DRAG.sk=null;return;}WAVE.selectedSigs.splice(fromIdx,1);WAVE.selectedSigs.splice(toIdx,0,DRAG.sk);DRAG.sk=null;renderSide();renderWaveforms();});
+document.addEventListener('dragend',function(){DRAG.sk=null;document.querySelectorAll('.sr.dragging,.sr.drag-over').forEach(function(el){el.classList.remove('dragging','drag-over');});});
+
+// === 坐标轴组 ===
+function addAxisGroup(){
+    if(!WAVE.selectedSigs.length){mShow('提示','请先勾选信号');return;}
+    var gId=WAVE.axisGroups.length+1;
+    WAVE.axisGroups.push({id:gId,color:C[(gId-1)%C.length],skeys:[]});
+    renderWaveforms();
+}
+function removeAxisGroup(gId){WAVE.axisGroups=WAVE.axisGroups.filter(function(g){return g.id!==gId;});renderWaveforms();}
+function addToAxisGroup(gId){
+    // 弹出选择信号的提示
+    var available=WAVE.selectedSigs.filter(function(sk){return!WAVE.axisGroups.some(function(g){return g.skeys.indexOf(sk)>=0;});});
+    if(!available.length){mShow('提示','没有可用信号');return;}
+    // 简单实现：添加第一个未分配的信号
+    var g=null;for(var i=0;i<WAVE.axisGroups.length;i++){if(WAVE.axisGroups[i].id===gId){g=WAVE.axisGroups[i];break;}}
+    if(g){available.forEach(function(sk){if(g.skeys.indexOf(sk)<0)g.skeys.push(sk);});}
+    renderWaveforms();
+}
+function toggleAxisGroupSig(gId,sk){
+    var g=null;for(var i=0;i<WAVE.axisGroups.length;i++){if(WAVE.axisGroups[i].id===gId){g=WAVE.axisGroups[i];break;}}
+    if(!g)return;
+    var idx=g.skeys.indexOf(sk);
+    if(idx>=0)g.skeys.splice(idx,1);else g.skeys.push(sk);
+    renderWaveforms();
 }
 
 // === 波形渲染 ===
-function renderWaveforms(){
-    var area=document.getElementById('sigCharts'),empty=document.getElementById('chartEmpty');
-    if(!WAVE.selectedSigs.length){area.innerHTML='';empty.style.display='';return;}
-    empty.style.display='none';
-    if(WAVE.mergeMode)renderMergedChart(area);
-    else renderSeparateCharts(area);
-    updateCursorInfo();
-}
+function renderWaveforms(){var area=document.getElementById('sigCharts'),empty=document.getElementById('chartEmpty');if(!WAVE.selectedSigs.length){area.innerHTML='';empty.style.display='';document.getElementById('cursorBar').style.display='none';return;}empty.style.display='none';if(WAVE.mergeMode)renderMerged(area);else renderSeparate(area);updateCursorInfo();}
 
-// === 合并坐标模式(多信号同轴) ===
-function renderMergedChart(area){
-    var html='<div class="merged-chart">';
-    html+='<div class="merged-chart-hdr"><span class="mh-title">合并波形</span><div class="merged-chart-legend">';
-    WAVE.selectedSigs.forEach(function(sk,i){
-        var d=getSigData(sk);if(!d)return;
-        var off=WAVE.hiddenLegs[sk]?' off':'';
-        html+='<div class="leg'+off+'" onclick="toggleLeg(\''+sk+'\')"><div class="leg-dot" style="background:'+d.col+'"></div><span class="leg-name">'+d.sig.n+'</span></div>';
+// === 合并坐标渲染(支持多坐标轴) ===
+function renderMerged(area){
+    var html='';
+    // 已分配到坐标轴组的信号
+    var assignedSks=[];WAVE.axisGroups.forEach(function(g){assignedSks=assignedSks.concat(g.skeys);});
+    // 默认组(未分配的信号)
+    var defaultSks=WAVE.selectedSigs.filter(function(sk){return assignedSks.indexOf(sk)<0;});
+
+    // 渲染每个坐标轴组
+    WAVE.axisGroups.forEach(function(g){
+        if(!g.skeys.length)return;
+        html+='<div class="merged-chart"><div class="merged-chart-hdr">';
+        html+='<span class="mh-title" style="color:'+g.color+'">坐标轴 '+g.id+'</span>';
+        html+='<div class="merged-chart-legend">';
+        g.skeys.forEach(function(sk){var d=getSigData(sk);if(!d)return;var off=WAVE.hiddenLegs[sk]?' off':'';html+='<div class="leg'+off+'" onclick="toggleLeg(\''+sk+'\')"><div class="leg-dot" style="background:'+d.col+'"></div><span class="leg-name">'+d.sig.n+'</span></div>';});
+        html+='</div><button class="ag-add" onclick="addToAxisGroup('+g.id+')" title="添加信号">+</button>';
+        html+='<button class="ag-del" onclick="removeAxisGroup('+g.id+')" title="删除坐标轴">✕</button>';
+        html+='</div><div class="merged-cv"><canvas id="mergedCv_'+g.id+'"></canvas></div></div>';
     });
-    html+='</div></div>';
-    html+='<div class="merged-cv"><canvas id="mergedCv"></canvas></div></div>';
+
+    // 默认合并坐标(未分配的信号)
+    if(defaultSks.length){
+        html+='<div class="merged-chart"><div class="merged-chart-hdr">';
+        html+='<span class="mh-title">合并波形</span><div class="merged-chart-legend">';
+        defaultSks.forEach(function(sk){var d=getSigData(sk);if(!d)return;var off=WAVE.hiddenLegs[sk]?' off':'';html+='<div class="leg'+off+'" onclick="toggleLeg(\''+sk+'\')"><div class="leg-dot" style="background:'+d.col+'"></div><span class="leg-name">'+d.sig.n+'</span></div>';});
+        html+='</div></div><div class="merged-cv"><canvas id="mergedCv_0"></canvas></div></div>';
+    }
     area.innerHTML=html;
-    var cv=document.getElementById('mergedCv');
-    if(cv)drawMerged(cv);
+
+    // 绘制每个坐标轴
+    WAVE.axisGroups.forEach(function(g){if(!g.skeys.length)return;var cv=document.getElementById('mergedCv_'+g.id);if(cv)drawMerged(cv,g.skeys);});
+    if(defaultSks.length){var cv=document.getElementById('mergedCv_0');if(cv)drawMerged(cv,defaultSks);}
 }
 
-function drawMerged(canvas){
+function drawMerged(canvas,skeys){
     var r=canvas.parentElement.getBoundingClientRect(),dpr=window.devicePixelRatio||1;
     canvas.width=r.width*dpr;canvas.height=r.height*dpr;canvas.style.width=r.width+'px';canvas.style.height=r.height+'px';
     var ctx=canvas.getContext('2d');ctx.scale(dpr,dpr);var W=r.width,H=r.height;
     var pl=52,pr=8,pt=8,pb=20,pW=W-pl-pr,pH=H-pt-pb;
-    // 收集所有可见信号数据
-    var allPts=[];var globalMn=Infinity,globalMx=-Infinity;
-    var sigDataArr=[];
-    WAVE.selectedSigs.forEach(function(sk){
-        if(WAVE.hiddenLegs[sk])return;
-        var d=getSigData(sk);if(!d)return;
-        var pts=[];var mn=Infinity,mx=-Infinity;
-        d.frames.forEach(function(f){var v=decSig(f.d,d.sig);pts.push({t:f.t,v:v});if(v<mn)mn=v;if(v>mx)mx=v;});
-        if(pts.length){allPts=allPts.concat(pts);if(mn<globalMn)globalMn=mn;if(mx>globalMx)globalMx=mx;}
-        sigDataArr.push({sk:sk,pts:pts,col:d.col,name:d.sig.n,mn:mn,mx:mx});
-    });
+    var allPts=[],globalMn=Infinity,globalMx=-Infinity,sigArr=[];
+    skeys.forEach(function(sk){if(WAVE.hiddenLegs[sk])return;var d=getSigData(sk);if(!d)return;var pts=[],mn=Infinity,mx=-Infinity;d.frames.forEach(function(f){var v=decSig(f.d,d.sig);pts.push({t:f.t,v:v});if(v<mn)mn=v;if(v>mx)mx=v;});if(pts.length){allPts=allPts.concat(pts);if(mn<globalMn)globalMn=mn;if(mx>globalMx)globalMx=mx;}sigArr.push({sk:sk,pts:pts,col:d.col,name:d.sig.n});});
     if(!allPts.length){ctx.fillStyle='#171717';ctx.fillRect(0,0,W,H);return;}
-    // Y范围
-    var yMn=globalMn,yMx=globalMx;
-    if(yMn===yMx){yMn-=1;yMx+=1;}var yRng=yMx-yMn;yMn-=yRng*.08;yMx+=yRng*.08;yRng=yMx-yMn;
-    // X范围
+    var yMn=globalMn,yMx=globalMx;if(yMn===yMx){yMn-=1;yMx+=1;}
+    // FitY: 使用可见X范围内的数据
     var t0=allPts[0].t,t1=allPts[allPts.length-1].t;
     if(WAVE.xRange){t0=WAVE.xRange[0];t1=WAVE.xRange[1];}
+    if(WAVE.yRanges.__fitVisible){
+        yMn=Infinity;yMx=-Infinity;
+        sigArr.forEach(function(sd){sd.pts.forEach(function(p){if(p.t>=t0&&p.t<=t1){if(p.v<yMn)yMn=p.v;if(p.v>yMx)yMx=p.v;}});});
+        if(yMn===yMx){yMn-=1;yMx+=1;}
+    }
+    var yRng=yMx-yMn;yMn-=yRng*.08;yMx+=yRng*.08;yRng=yMx-yMn;
     var tR=t1-t0||1;
-    // 保存参数
     canvas._params={pl:pl,pr:pr,pt:pt,pb:pb,pW:pW,pH:pH,t0:t0,t1:t1,tR:tR,mn:yMn,mx:yMx,yRng:yRng};
-    // 背景+网格
     ctx.fillStyle='#171717';ctx.fillRect(0,0,W,H);
     ctx.strokeStyle='rgba(255,255,255,.04)';ctx.lineWidth=1;
     for(var i=0;i<=4;i++){var y=pt+(pH/4)*i;ctx.beginPath();ctx.moveTo(pl,y);ctx.lineTo(W-pr,y);ctx.stroke();}
-    // Y轴标签
     ctx.fillStyle='#636366';ctx.font='8px -apple-system,sans-serif';ctx.textAlign='right';
     for(var i=0;i<=4;i++)ctx.fillText((yMx-(yRng/4)*i).toFixed(1),pl-4,pt+(pH/4)*i+3);
-    // X轴标签
     ctx.textAlign='center';for(var i=0;i<=5;i++)ctx.fillText((t0+(tR/5)*i).toFixed(2)+'s',pl+(pW/5)*i,H-4);
-    // 绘制每条信号
-    sigDataArr.forEach(function(sd){
-        ctx.strokeStyle=sd.col;ctx.lineWidth=1.5;ctx.beginPath();var ok=false;
-        sd.pts.forEach(function(p){if(p.t<t0||p.t>t1)return;var x=pl+((p.t-t0)/tR)*pW,y=pt+((yMx-p.v)/yRng)*pH;if(!ok){ctx.moveTo(x,y);ok=true;}else ctx.lineTo(x,y);});
-        ctx.stroke();
-    });
-    // 光标
+    sigArr.forEach(function(sd){ctx.strokeStyle=sd.col;ctx.lineWidth=1.5;ctx.beginPath();var ok=false;sd.pts.forEach(function(p){if(p.t<t0||p.t>t1)return;var x=pl+((p.t-t0)/tR)*pW,y=pt+((yMx-p.v)/yRng)*pH;if(!ok){ctx.moveTo(x,y);ok=true;}else ctx.lineTo(x,y);});ctx.stroke();});
     drawCursors(ctx,pl,pt,pW,pH,t0,tR,yMx,yRng);
-    // 存储t范围供缩放使用
-    canvas._allPts=allPts;
+    canvas._allPts=allPts;canvas._skeys=skeys;
 }
 
-// === 独立波形模式 ===
-function renderSeparateCharts(area){
-    var html='';
-    WAVE.selectedSigs.forEach(function(sk,i){
-        var d=getSigData(sk);if(!d)return;
-        var last=d.frames.length?decSig(d.frames[d.frames.length-1].d,d.sig).toFixed(3):'--';
-        html+='<div class="sig-chart"><div class="sig-chart-hdr"><span class="sn" style="color:'+d.col+'">● '+d.sig.n+'</span><span class="su">[0x'+d.msg.id.toString(16).toUpperCase()+']</span><span class="sv">'+last+' '+d.sig.u+'</span><button class="sdel" onclick="toggleSig(\''+sk+'\')">✕</button></div><div class="sig-chart-cv"><canvas id="wv_'+i+'"></canvas></div></div>';
-    });
-    area.innerHTML=html;
-    WAVE.selectedSigs.forEach(function(sk,i){
-        var d=getSigData(sk);if(!d)return;
-        var cv=document.getElementById('wv_'+i);if(cv)drawSingle(cv,d.frames,d.sig,d.col,sk);
-    });
-}
+// === 独立模式 ===
+function renderSeparate(area){var html='';WAVE.selectedSigs.forEach(function(sk,i){var d=getSigData(sk);if(!d)return;var last=d.frames.length?decSig(d.frames[d.frames.length-1].d,d.sig).toFixed(3):'--';html+='<div class="sig-chart"><div class="sig-chart-hdr"><span class="sn" style="color:'+d.col+'">● '+d.sig.n+'</span><span class="su">[0x'+d.msg.id.toString(16).toUpperCase()+']</span><span class="sv">'+last+' '+d.sig.u+'</span><button class="sdel" onclick="toggleSig(\''+sk+'\')">✕</button></div><div class="sig-chart-cv"><canvas id="wv_'+i+'"></canvas></div></div>';});area.innerHTML=html;WAVE.selectedSigs.forEach(function(sk,i){var d=getSigData(sk);if(!d)return;var cv=document.getElementById('wv_'+i);if(cv)drawSingle(cv,d.frames,d.sig,d.col,sk);});}
 
-function drawSingle(canvas,frames,sig,color,sk){
-    var r=canvas.parentElement.getBoundingClientRect(),dpr=window.devicePixelRatio||1;
-    canvas.width=r.width*dpr;canvas.height=r.height*dpr;canvas.style.width=r.width+'px';canvas.style.height=r.height+'px';
-    var ctx=canvas.getContext('2d');ctx.scale(dpr,dpr);var W=r.width,H=r.height;
-    var pts=[],mn=Infinity,mx=-Infinity;
-    frames.forEach(function(f){var v=decSig(f.d,sig);pts.push({t:f.t,v:v});if(v<mn)mn=v;if(v>mx)mx=v;});
-    if(!pts.length)return;
-    if(WAVE.yRanges[sk]){mn=WAVE.yRanges[sk][0];mx=WAVE.yRanges[sk][1];}
-    else{if(mn===mx){mn-=1;mx+=1;}var rng=mx-mn;mn-=rng*.08;mx+=rng*.08;}
-    var yRng=mx-mn;
-    var t0=frames[0].t,t1=frames[frames.length-1].t;
-    if(WAVE.xRange){t0=WAVE.xRange[0];t1=WAVE.xRange[1];}
-    var tR=t1-t0||1;
-    var pl=48,pr=6,pt=4,pb=4,pW=W-pl-pr,pH=H-pt-pb;
-    canvas._params={pl:pl,pr:pr,pt:pt,pb:pb,pW:pW,pH:pH,t0:t0,t1:t1,tR:tR,mn:mn,mx:mx,yRng:yRng};
-    ctx.fillStyle='#171717';ctx.fillRect(0,0,W,H);
-    ctx.strokeStyle='rgba(255,255,255,.04)';ctx.lineWidth=1;
-    for(var i=0;i<=4;i++){var y=pt+(pH/4)*i;ctx.beginPath();ctx.moveTo(pl,y);ctx.lineTo(W-pr,y);ctx.stroke();}
-    ctx.fillStyle='#636366';ctx.font='8px -apple-system,sans-serif';ctx.textAlign='right';
-    for(var i=0;i<=4;i++)ctx.fillText((mx-(yRng/4)*i).toFixed(1),pl-3,pt+(pH/4)*i+3);
-    ctx.textAlign='center';for(var i=0;i<=4;i++)ctx.fillText((t0+(tR/4)*i).toFixed(2)+'s',pl+(pW/4)*i,H-1);
-    ctx.strokeStyle=color;ctx.lineWidth=1.5;ctx.beginPath();var ok=false;
-    pts.forEach(function(p){if(p.t<t0||p.t>t1)return;var x=pl+((p.t-t0)/tR)*pW,y=pt+((mx-p.v)/yRng)*pH;if(!ok){ctx.moveTo(x,y);ok=true;}else ctx.lineTo(x,y);});
-    ctx.stroke();
-    ctx.save();ctx.beginPath();ctx.rect(pl,pt,pW,pH);ctx.clip();
-    ctx.beginPath();ok=false;
-    pts.forEach(function(p){if(p.t<t0||p.t>t1)return;var x=pl+((p.t-t0)/tR)*pW,y=pt+((mx-p.v)/yRng)*pH;if(!ok){ctx.moveTo(x,y);ok=true;}else ctx.lineTo(x,y);});
-    ctx.lineTo(pl+pW,pt+pH);ctx.lineTo(pl,pt+pH);ctx.closePath();ctx.fillStyle=color+'14';ctx.fill();ctx.restore();
-    drawCursors(ctx,pl,pt,pW,pH,t0,tR,mx,yRng);
-    canvas._allPts=pts;
-}
+function drawSingle(canvas,frames,sig,color,sk){var r=canvas.parentElement.getBoundingClientRect(),dpr=window.devicePixelRatio||1;canvas.width=r.width*dpr;canvas.height=r.height*dpr;canvas.style.width=r.width+'px';canvas.style.height=r.height+'px';var ctx=canvas.getContext('2d');ctx.scale(dpr,dpr);var W=r.width,H=r.height;var pts=[],mn=Infinity,mx=-Infinity;frames.forEach(function(f){var v=decSig(f.d,sig);pts.push({t:f.t,v:v});if(v<mn)mn=v;if(v>mx)mx=v;});if(!pts.length)return;if(WAVE.yRanges[sk]){mn=WAVE.yRanges[sk][0];mx=WAVE.yRanges[sk][1];}else{if(mn===mx){mn-=1;mx+=1;}var rng=mx-mn;mn-=rng*.08;mx+=rng*.08;}var yRng=mx-mn;var t0=frames[0].t,t1=frames[frames.length-1].t;if(WAVE.xRange){t0=WAVE.xRange[0];t1=WAVE.xRange[1];}var tR=t1-t0||1;var pl=48,pr=6,pt=4,pb=4,pW=W-pl-pr,pH=H-pt-pb;canvas._params={pl:pl,pr:pr,pt:pt,pb:pb,pW:pW,pH:pH,t0:t0,t1:t1,tR:tR,mn:mn,mx:mx,yRng:yRng};ctx.fillStyle='#171717';ctx.fillRect(0,0,W,H);ctx.strokeStyle='rgba(255,255,255,.04)';ctx.lineWidth=1;for(var i=0;i<=4;i++){var y=pt+(pH/4)*i;ctx.beginPath();ctx.moveTo(pl,y);ctx.lineTo(W-pr,y);ctx.stroke();}ctx.fillStyle='#636366';ctx.font='8px -apple-system,sans-serif';ctx.textAlign='right';for(var i=0;i<=4;i++)ctx.fillText((mx-(yRng/4)*i).toFixed(1),pl-3,pt+(pH/4)*i+3);ctx.textAlign='center';for(var i=0;i<=4;i++)ctx.fillText((t0+(tR/4)*i).toFixed(2)+'s',pl+(pW/4)*i,H-1);ctx.strokeStyle=color;ctx.lineWidth=1.5;ctx.beginPath();var ok=false;pts.forEach(function(p){if(p.t<t0||p.t>t1)return;var x=pl+((p.t-t0)/tR)*pW,y=pt+((mx-p.v)/yRng)*pH;if(!ok){ctx.moveTo(x,y);ok=true;}else ctx.lineTo(x,y);});ctx.stroke();drawCursors(ctx,pl,pt,pW,pH,t0,tR,mx,yRng);canvas._allPts=pts;canvas._skeys=[sk];}
 
-// === 光标绘制 ===
-function drawCursors(ctx,pl,pt,pW,pH,t0,tR,yMx,yRng){
-    if(WAVE.cursorMode==='off')return;
-    if(WAVE.cursor1!==null){var cx=pl+((WAVE.cursor1-t0)/tR)*pW;if(cx>=pl&&cx<=pl+pW){ctx.strokeStyle='#FFD60A';ctx.lineWidth=1;ctx.setLineDash([4,3]);ctx.beginPath();ctx.moveTo(cx,pt);ctx.lineTo(cx,pt+pH);ctx.stroke();ctx.setLineDash([]);}}
-    if(WAVE.cursorMode==='dual'&&WAVE.cursor2!==null){var cx2=pl+((WAVE.cursor2-t0)/tR)*pW;if(cx2>=pl&&cx2<=pl+pW){ctx.strokeStyle='#FF375F';ctx.lineWidth=1;ctx.setLineDash([4,3]);ctx.beginPath();ctx.moveTo(cx2,pt);ctx.lineTo(cx2,pt+pH);ctx.stroke();ctx.setLineDash([]);}}
-}
+function drawCursors(ctx,pl,pt,pW,pH,t0,tR,yMx,yRng){if(WAVE.cursorMode==='off')return;if(WAVE.cursor1!==null){var cx=pl+((WAVE.cursor1-t0)/tR)*pW;if(cx>=pl&&cx<=pl+pW){ctx.strokeStyle='#FFD60A';ctx.lineWidth=1.5;ctx.setLineDash([4,3]);ctx.beginPath();ctx.moveTo(cx,pt);ctx.lineTo(cx,pt+pH);ctx.stroke();ctx.setLineDash([]);}}if(WAVE.cursorMode==='dual'&&WAVE.cursor2!==null){var cx2=pl+((WAVE.cursor2-t0)/tR)*pW;if(cx2>=pl&&cx2<=pl+pW){ctx.strokeStyle='#FF375F';ctx.lineWidth=1.5;ctx.setLineDash([4,3]);ctx.beginPath();ctx.moveTo(cx2,pt);ctx.lineTo(cx2,pt+pH);ctx.stroke();ctx.setLineDash([]);}}}
 
 // === 光标模式 ===
-function setCursorMode(mode){WAVE.cursorMode=mode;document.getElementById('bCursorOff').classList.toggle('on',mode==='off');document.getElementById('bCursor1').classList.toggle('on',mode==='single');document.getElementById('bCursor2').classList.toggle('on',mode==='dual');if(mode==='off'){WAVE.cursor1=null;WAVE.cursor2=null;}renderWaveforms();}
+function setCursorMode(mode){WAVE.cursorMode=mode;document.getElementById('bCurOff').classList.toggle('on',mode==='off');document.getElementById('bCur1').classList.toggle('on',mode==='single');document.getElementById('bCur2').classList.toggle('on',mode==='dual');if(mode==='off'){WAVE.cursor1=null;WAVE.cursor2=null;}renderWaveforms();}
 function clearCursors(){WAVE.cursor1=null;WAVE.cursor2=null;renderWaveforms();}
-function updateCursorInfo(){
-    var info=document.getElementById('cursorInfo');
-    if(WAVE.cursorMode==='off'||WAVE.cursor1===null){info.style.display='none';return;}
-    info.style.display='flex';
-    var html='<span class="ct">t1: '+WAVE.cursor1.toFixed(4)+'s</span>';
-    if(WAVE.cursorMode==='dual'&&WAVE.cursor2!==null){html+='<span class="ct2">t2: '+WAVE.cursor2.toFixed(4)+'s</span>';html+='<span class="cd">Δt: '+Math.abs(WAVE.cursor2-WAVE.cursor1).toFixed(4)+'s</span>';var freq=1/Math.abs(WAVE.cursor2-WAVE.cursor1);if(freq<10000)html+='<span class="cd">f: '+freq.toFixed(2)+'Hz</span>';}
-    info.innerHTML=html;
-}
 
-// === 图例点击(隐藏/显示) ===
+// === 光标信息(显示信号值而非频率) ===
+function updateCursorInfo(){
+    var bar=document.getElementById('cursorBar');
+    if(WAVE.cursorMode==='off'||WAVE.cursor1===null){bar.style.display='none';return;}
+    bar.style.display='flex';
+    var html='<span class="ct">t1: '+WAVE.cursor1.toFixed(4)+'s</span>';
+    // 显示每个选中信号在t1处的值
+    html+='<span class="cv-row">';
+    WAVE.selectedSigs.forEach(function(sk){if(WAVE.hiddenLegs[sk])return;var d=getSigData(sk);if(!d)return;var val=getValAtTime(d.frames,d.sig,WAVE.cursor1);if(val!==null)html+='<span class="cv-sig"><span class="cv-dot" style="background:'+d.col+'"></span><span class="cv-val" style="color:'+d.col+'">'+d.sig.n+': '+val.toFixed(2)+(d.sig.u?' '+d.sig.u:'')+'</span></span>';});
+    html+='</span>';
+    if(WAVE.cursorMode==='dual'&&WAVE.cursor2!==null){
+        html+='<span class="ct2">t2: '+WAVE.cursor2.toFixed(4)+'s</span>';
+        html+='<span class="cd">Δt: '+Math.abs(WAVE.cursor2-WAVE.cursor1).toFixed(4)+'s</span>';
+        // t2处的信号值
+        html+='<span class="cv-row">';
+        WAVE.selectedSigs.forEach(function(sk){if(WAVE.hiddenLegs[sk])return;var d=getSigData(sk);if(!d)return;var val=getValAtTime(d.frames,d.sig,WAVE.cursor2);if(val!==null)html+='<span class="cv-sig"><span class="cv-dot" style="background:'+d.col+'"></span><span class="cv-val" style="color:'+d.col+'">'+d.sig.n+': '+val.toFixed(2)+(d.sig.u?' '+d.sig.u:'')+'</span></span>';});
+        html+='</span>';
+    }
+    bar.innerHTML=html;
+}
+function getValAtTime(frames,sig,t){
+    // 找到t时刻最近的帧
+    var best=null,bestDist=Infinity;
+    for(var i=0;i<frames.length;i++){var dist=Math.abs(frames[i].t-t);if(dist<bestDist){bestDist=dist;best=frames[i];}else if(dist>bestDist)break;}
+    return best?decSig(best.d,sig):null;
+}
 function toggleLeg(sk){WAVE.hiddenLegs[sk]=!WAVE.hiddenLegs[sk];renderWaveforms();}
 
 // === 缩放/拖动 ===
-function getCanvasUnderMouse(e){
-    var cv=e.target.closest('canvas');if(!cv||!cv._params)return null;return cv;
-}
+function getCanvasUnder(e){var cv=e.target.closest('canvas');return(cv&&cv._params)?cv:null;}
 document.addEventListener('mousedown',function(e){
+    // 检查是否在光标附近(拖动标尺)
+    if(WAVE.cursorMode!=='off'){
+        var cv=getCanvasUnder(e);if(cv){
+            var p=cv._params,rect=cv.getBoundingClientRect(),x=e.clientX-rect.left;
+            var cx1=WAVE.cursor1!==null?p.pl+((WAVE.cursor1-p.t0)/p.tR)*p.pW:-100;
+            var cx2=WAVE.cursor2!==null?p.pl+((WAVE.cursor2-p.t0)/p.tR)*p.pW:-100;
+            if(Math.abs(x-cx1)<8){CURSOR_DRAG.active=true;CURSOR_DRAG.which=1;e.preventDefault();return;}
+            if(Math.abs(x-cx2)<8){CURSOR_DRAG.active=true;CURSOR_DRAG.which=2;e.preventDefault();return;}
+        }
+    }
     if(WAVE.cursorMode!=='off')return;
-    var cv=getCanvasUnderMouse(e);if(!cv)return;
-    var p=cv._params,rect=cv.getBoundingClientRect(),x=e.clientX-rect.left;
-    if(x<p.pl||x>p.pl+p.pW)return;
-    ZOOM.dragging=true;ZOOM.dragStartX=e.clientX;ZOOM.dragStartT0=p.t0;ZOOM.dragStartT1=p.t1;ZOOM.canvasParams=p;
-    cv.style.cursor='grabbing';
+    var cv=getCanvasUnder(e);if(!cv)return;var p=cv._params,rect=cv.getBoundingClientRect(),x=e.clientX-rect.left;if(x<p.pl||x>p.pl+p.pW)return;ZOOM.dragging=true;ZOOM.dragStartX=e.clientX;ZOOM.dragStartT0=p.t0;ZOOM.dragStartT1=p.t1;ZOOM.canvasParams=p;cv.style.cursor='grabbing';
 });
 document.addEventListener('mousemove',function(e){
-    if(!ZOOM.dragging)return;
-    var dx=e.clientX-ZOOM.dragStartX;
-    var p=ZOOM.canvasParams;
-    var tShift=(-dx/p.pW)*(ZOOM.dragStartT1-ZOOM.dragStartT0);
-    WAVE.xRange=[ZOOM.dragStartT0+tShift,ZOOM.dragStartT1+tShift];
-    renderWaveforms();
+    // 拖动标尺
+    if(CURSOR_DRAG.active){
+        var cv=getCanvasUnder(e);if(!cv)return;
+        var p=cv._params,rect=cv.getBoundingClientRect(),x=e.clientX-rect.left;
+        var t=Math.max(p.t0,Math.min(p.t1,p.t0+((x-p.pl)/p.pW)*p.tR));
+        if(CURSOR_DRAG.which===1)WAVE.cursor1=t;else WAVE.cursor2=t;
+        renderWaveforms();return;
+    }
+    if(!ZOOM.dragging)return;var dx=e.clientX-ZOOM.dragStartX;var p=ZOOM.canvasParams;var tShift=(-dx/p.pW)*(ZOOM.dragStartT1-ZOOM.dragStartT0);WAVE.xRange=[ZOOM.dragStartT0+tShift,ZOOM.dragStartT1+tShift];renderWaveforms();
 });
-document.addEventListener('mouseup',function(e){
+document.addEventListener('mouseup',function(){
+    if(CURSOR_DRAG.active){CURSOR_DRAG.active=false;return;}
     if(ZOOM.dragging){ZOOM.dragging=false;document.querySelectorAll('canvas').forEach(function(cv){cv.style.cursor='crosshair';});}
 });
-// 滚轮缩放
-document.addEventListener('wheel',function(e){
-    var cv=getCanvasUnderMouse(e);if(!cv)return;
-    var p=cv._params,rect=cv.getBoundingClientRect(),x=e.clientX-rect.left;
-    if(x<p.pl||x>p.pl+p.pW)return;
-    e.preventDefault();
-    var factor=e.deltaY>0?1.15:0.87;
-    var mouseT=p.t0+((x-p.pl)/p.pW)*p.tR;
-    var newT0=mouseT-(mouseT-(WAVE.xRange?WAVE.xRange[0]:p.t0))*factor;
-    var newT1=mouseT+((WAVE.xRange?WAVE.xRange[1]:p.t1)-mouseT)*factor;
-    WAVE.xRange=[newT0,newT1];
-    renderWaveforms();
-},{passive:false});
+document.addEventListener('wheel',function(e){var cv=getCanvasUnder(e);if(!cv)return;var p=cv._params,rect=cv.getBoundingClientRect(),x=e.clientX-rect.left;if(x<p.pl||x>p.pl+p.pW)return;e.preventDefault();var factor=e.deltaY>0?1.15:0.87;var mouseT=p.t0+((x-p.pl)/p.pW)*p.tR;var newT0=mouseT-(mouseT-(WAVE.xRange?WAVE.xRange[0]:p.t0))*factor;var newT1=mouseT+((WAVE.xRange?WAVE.xRange[1]:p.t1)-mouseT)*factor;WAVE.xRange=[newT0,newT1];renderWaveforms();},{passive:false});
 
-// === 点击放置光标 ===
+// === 点击放光标(非拖动时) ===
 document.addEventListener('click',function(e){
-    if(WAVE.cursorMode==='off'||ZOOM.dragging)return;
-    var cv=getCanvasUnderMouse(e);if(!cv)return;
-    var p=cv._params,rect=cv.getBoundingClientRect(),x=e.clientX-rect.left;
-    if(x<p.pl||x>p.pl+p.pW)return;
+    if(WAVE.cursorMode==='off'||ZOOM.dragging||CURSOR_DRAG.active)return;
+    var cv=getCanvasUnder(e);if(!cv)return;var p=cv._params,rect=cv.getBoundingClientRect(),x=e.clientX-rect.left;if(x<p.pl||x>p.pl+p.pW)return;
     var t=p.t0+((x-p.pl)/p.pW)*p.tR;
     if(WAVE.cursorMode==='single'){WAVE.cursor1=t;}
     else if(WAVE.cursorMode==='dual'){if(WAVE.cursor1===null)WAVE.cursor1=t;else if(WAVE.cursor2===null)WAVE.cursor2=t;else{WAVE.cursor1=t;WAVE.cursor2=null;}}
     renderWaveforms();
 });
 
-// === Fit / Reset ===
+// === Fit ===
 function fitAll(){WAVE.xRange=null;WAVE.yRanges={};renderWaveforms();}
-function fitY(){WAVE.yRanges={};renderWaveforms();}
+function fitY(){WAVE.yRanges={};WAVE.yRanges.__fitVisible=true;renderWaveforms();setTimeout(function(){delete WAVE.yRanges.__fitVisible;},100);}
 function resetX(){WAVE.xRange=null;renderWaveforms();}
 function resetY(){WAVE.yRanges={};renderWaveforms();}
 
 // === Trace ===
-function renderTrace(){
-    var tb=document.getElementById('tTb'),h='',activeCh=getActiveCh(),allFrames=[];
-    for(var mid in S.msgs){var m=S.msgs[mid];m.frames.forEach(function(f,idx){if(activeCh.indexOf(f.ch)<0)return;var hex=f.d.map(function(b){return('0'+b.toString(16).toUpperCase()).slice(-2);}).join(' ');var sv='';if(m.sigs.length){m.sigs.forEach(function(sig,si){var v=decSig(f.d,sig),d=v.toFixed(2);if(m.vt&&m.vt[sig.n]&&m.vt[sig.n][Math.round(v)])d=m.vt[sig.n][Math.round(v)];sv+=(si>0?', ':'')+sig.n+'='+d;});}var per='';if(idx>0)per=((f.t-m.frames[idx-1].t)*1000).toFixed(1)+'ms';allFrames.push({t:f.t,ch:f.ch,id:f.id,dl:f.dl,hex:hex,per:per,sv:sv});});}
-    allFrames.sort(function(a,b){return a.t-b.t;});
-    var disp=allFrames.slice(-500);
-    disp.forEach(function(f,i){h+='<tr><td>'+(allFrames.length-500+i+1)+'</td><td style="color:#5856D6">'+f.t.toFixed(6)+'</td><td>'+f.ch+'</td><td style="color:var(--blue);font-weight:600">0x'+f.id.toString(16).toUpperCase()+'</td><td>'+f.dl+'</td><td style="color:var(--orange)">'+f.hex+'</td><td>'+f.per+'</td><td style="color:var(--green)">'+f.sv+'</td></tr>';});
-    tb.innerHTML=h;
-}
+function renderTrace(){var tb=document.getElementById('tTb'),h='',activeCh=getActiveCh(),allFrames=[];for(var mid in S.msgs){var m=S.msgs[mid];m.frames.forEach(function(f,idx){if(activeCh.indexOf(f.ch)<0)return;var hex=f.d.map(function(b){return('0'+b.toString(16).toUpperCase()).slice(-2);}).join(' ');var sv='';if(m.sigs.length){m.sigs.forEach(function(sig,si){var v=decSig(f.d,sig),d=v.toFixed(2);if(m.vt&&m.vt[sig.n]&&m.vt[sig.n][Math.round(v)])d=m.vt[sig.n][Math.round(v)];sv+=(si>0?', ':'')+sig.n+'='+d;});}var per='';if(idx>0)per=((f.t-m.frames[idx-1].t)*1000).toFixed(1)+'ms';allFrames.push({t:f.t,ch:f.ch,id:f.id,dl:f.dl,hex:hex,per:per,sv:sv});});}allFrames.sort(function(a,b){return a.t-b.t;});var disp=allFrames.slice(-500);disp.forEach(function(f,i){h+='<tr><td>'+(allFrames.length-500+i+1)+'</td><td style="color:#5856D6">'+f.t.toFixed(6)+'</td><td>'+f.ch+'</td><td style="color:var(--blue);font-weight:600">0x'+f.id.toString(16).toUpperCase()+'</td><td>'+f.dl+'</td><td style="color:var(--orange)">'+f.hex+'</td><td>'+f.per+'</td><td style="color:var(--green)">'+f.sv+'</td></tr>';});tb.innerHTML=h;}
 
-// === 协议 ===
 function renderProto(){var v=document.getElementById('pV'),h='';Object.values(S.defs).sort(function(a,b){return a.id-b.id;}).forEach(function(m){var hx=m.id.toString(16).toUpperCase();h+='<div class="pc"><div class="pc-h"><span class="pid">0x'+hx+'</span><span class="pname">'+m.name+'</span><span class="pm">DLC:'+m.dl+(m.sender?' '+m.sender:'')+'</span></div>';if(m.sigs.length){h+='<table class="pt"><thead><tr><th>信号</th><th>起始</th><th>长度</th><th>字节序</th><th>因子</th><th>偏移</th><th>范围</th><th>单位</th></tr></thead><tbody>';m.sigs.forEach(function(s){h+='<tr><td>'+s.n+'</td><td>'+s.sb+'</td><td>'+s.bl+'</td><td>'+(s.bo===1?'Intel':'Moto')+'</td><td>'+s.fc+'</td><td>'+s.of+'</td><td>['+s.mn+'|'+s.mx+']</td><td>'+s.u+'</td></tr>';});h+='</tbody></table>';}else h+='<div style="padding:6px;color:#636366;font-size:9px">无信号</div>';h+='</div>';});if(!h)h='<div class="empty"><div class="ico">📖</div><div class="t1">暂无协议</div></div>';v.innerHTML=h;}
 
-// === 视图切换 ===
 function tabView(el,name){document.querySelectorAll('.vtab').forEach(function(t){t.classList.remove('on');});el.classList.add('on');document.querySelectorAll('.vpanel').forEach(function(p){p.classList.remove('on');});document.getElementById('v'+name.charAt(0).toUpperCase()+name.slice(1)).classList.add('on');}
 
-// === 工具 ===
-function doClear(){S={asc:[],dbc:[],msgs:{},defs:{},frames:[],sel:null,ci:0,parsed:false,channels:{}};WAVE={selectedSigs:[],cursorMode:'off',cursor1:null,cursor2:null,xRange:null,yRanges:{},mergeMode:true,hiddenLegs:{},sortMode:'id'};['sF','sI','sS'].forEach(function(id){document.getElementById(id).textContent='0';});document.getElementById('sD').textContent='0s';document.getElementById('bGo').disabled=true;document.getElementById('bCsv').disabled=true;document.getElementById('pList').innerHTML='<div class="empty" style="height:200px"><div class="ico">📋</div><div class="t2">打开文件开始</div></div>';document.getElementById('sigCharts').innerHTML='';document.getElementById('chartEmpty').style.display='';document.getElementById('tTb').innerHTML='';document.getElementById('pV').innerHTML='<div class="empty"><div class="ico">📖</div><div class="t1">暂无协议</div></div>';document.getElementById('chBar').innerHTML='<span class="ch-label">CH:</span>';document.getElementById('stI').textContent='就绪';document.getElementById('cursorInfo').style.display='none';}
+function doClear(){S={asc:[],dbc:[],msgs:{},defs:{},frames:[],sel:null,parsed:false,channels:{}};WAVE={selectedSigs:[],cursorMode:'off',cursor1:null,cursor2:null,xRange:null,yRanges:{},mergeMode:true,hiddenLegs:{},sortMode:'id',axisGroups:[]};['sF','sI','sS'].forEach(function(id){document.getElementById(id).textContent='0';});document.getElementById('sD').textContent='0s';document.getElementById('bGo').disabled=true;document.getElementById('bCsv').disabled=true;document.getElementById('pList').innerHTML='<div class="empty" style="height:200px"><div class="ico">📋</div><div class="t2">打开文件开始</div></div>';document.getElementById('sigCharts').innerHTML='';document.getElementById('chartEmpty').style.display='';document.getElementById('tTb').innerHTML='';document.getElementById('pV').innerHTML='<div class="empty"><div class="ico">📖</div><div class="t1">暂无协议</div></div>';document.getElementById('chBar').innerHTML='<span class="ch-label">CH:</span>';document.getElementById('stI').textContent='就绪';document.getElementById('cursorBar').style.display='none';}
 function doExport(){if(!S.parsed)return;var csv='时间,CH,ID,DLC,数据\n';S.frames.forEach(function(f){csv+=f.t.toFixed(6)+','+f.ch+',0x'+f.id.toString(16).toUpperCase()+','+f.dl+','+f.d.map(function(b){return('0'+b.toString(16)).slice(-2);}).join(' ')+'\n';});var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='can_'+new Date().toISOString().slice(0,10)+'.csv';a.click();}
 function mShow(t,b){document.getElementById('mT').textContent=t;document.getElementById('mB').textContent=b;document.getElementById('mBg').classList.add('show');}
 function mClose(){document.getElementById('mBg').classList.remove('show');}
-
-// === 信号拖拽排序 ===
-var DRAG={sk:null,startIdx:-1};
-document.addEventListener('dragstart',function(e){
-    var handle=e.target.closest('.sr-drag');
-    if(!handle)return;
-    var sk=handle.dataset.sk;
-    DRAG.sk=sk;
-    DRAG.startIdx=WAVE.selectedSigs.indexOf(sk);
-    var row=handle.closest('.sr');
-    if(row)row.classList.add('dragging');
-    e.dataTransfer.effectAllowed='move';
-    e.dataTransfer.setData('text/plain',sk);
-    // 设置拖动图像
-    if(row)e.dataTransfer.setDragImage(row,20,10);
-});
-document.addEventListener('dragover',function(e){
-    if(!DRAG.sk)return;
-    e.preventDefault();
-    e.dataTransfer.dropEffect='move';
-    var row=e.target.closest('.sr');
-    // 清除之前的高亮
-    document.querySelectorAll('.sr.drag-over').forEach(function(el){el.classList.remove('drag-over');});
-    if(row&&row.dataset.sk!==DRAG.sk)row.classList.add('drag-over');
-});
-document.addEventListener('dragleave',function(e){
-    var row=e.target.closest('.sr');
-    if(row)row.classList.remove('drag-over');
-});
-document.addEventListener('drop',function(e){
-    e.preventDefault();
-    document.querySelectorAll('.sr.drag-over').forEach(function(el){el.classList.remove('drag-over');});
-    document.querySelectorAll('.sr.dragging').forEach(function(el){el.classList.remove('dragging');});
-    if(!DRAG.sk)return;
-    var targetRow=e.target.closest('.sr');
-    if(!targetRow||!targetRow.dataset.sk){DRAG.sk=null;return;}
-    var targetSk=targetRow.dataset.sk;
-    if(targetSk===DRAG.sk){DRAG.sk=null;return;}
-    var fromIdx=WAVE.selectedSigs.indexOf(DRAG.sk);
-    var toIdx=WAVE.selectedSigs.indexOf(targetSk);
-    if(fromIdx<0||toIdx<0){DRAG.sk=null;return;}
-    // 移动
-    WAVE.selectedSigs.splice(fromIdx,1);
-    WAVE.selectedSigs.splice(toIdx,0,DRAG.sk);
-    DRAG.sk=null;
-    renderSide();
-    renderWaveforms();
-});
-document.addEventListener('dragend',function(e){
-    DRAG.sk=null;
-    document.querySelectorAll('.sr.dragging').forEach(function(el){el.classList.remove('dragging');});
-    document.querySelectorAll('.sr.drag-over').forEach(function(el){el.classList.remove('drag-over');});
-});
-
 window.addEventListener('resize',function(){if(WAVE.selectedSigs.length)renderWaveforms();});
 </script>
 </body>
