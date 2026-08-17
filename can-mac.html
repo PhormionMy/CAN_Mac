@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CAN Mac Analyzer</title>
+<!--
+╔══════════════════════════════════════════════════════════════╗
+║  CAN Mac Analyzer - 版本信息                                  ║
+║  ⚠️ 重要：任何代码改动都必须同步更新下方的版本号和日期时间！      ║
+║  版本号格式：vX.Y.Z                                            ║
+║  日期格式：YYYY-MM-DD HH:MM                                   ║
+╚══════════════════════════════════════════════════════════════╝
+-->
+<script>
+/* ============================================================
+ * CAN Mac Analyzer - 版本配置
+ * ⚠️ 每次代码修改都必须更新 VERSION 和 BUILD_DATE
+ * ============================================================ */
+var APP_VERSION = "v1.0.0";
+var BUILD_DATE = "2026-08-17 15:50";
+/* ============================================================ */
+</script>
+<!-- pako库 - BLF解压必需 -->
+<script src="https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js"></script>
+<style>
+/* ============================================================
+ * CAN Mac Analyzer - 全局样式 (CANoe风格 + macOS适配)
+ * ⚠️ 任何样式改动都必须同步更新版本号和日期时间
+ * ============================================================ */
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --sidebar-w:280px;--toolbar-h:44px;--statusbar-h:28px;--titlebar-h:38px;
+  --accent:#007AFF;--accent-hover:#0056CC;
+  --bg-primary:#1E1E1E;--bg-secondary:#252526;--bg-tertiary:#2D2D30;--bg-sidebar:#1B1B1D;
+  --text-primary:#CCCCCC;--text-secondary:#808080;--text-accent:#4FC1FF;
+  --border:#3E3E42;--success:#4EC9B0;--warning:#D7BA7D;--error:#F44747;
+  --row-hover:rgba(255,255,255,0.04);--row-selected:rgba(0,122,255,0.15);
+  --scrollbar:#424242;--scrollbar-hover:#555;
+}
+html,body{height:100%;overflow:hidden;background:var(--bg-primary);color:var(--text-primary);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','SF Pro Display','Helvetica Neue',sans-serif;font-size:13px;-webkit-font-smoothing:antialiased}
+body{display:flex;flex-direction:column}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--scrollbar);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:var(--scrollbar-hover)}
+.titlebar{height:var(--titlebar-h);background:linear-gradient(180deg,#3C3C3C 0%,#333333 100%);display:flex;align-items:center;padding:0 12px;border-bottom:1px solid #222;-webkit-app-region:drag;flex-shrink:0}
+.traffic-lights{display:flex;gap:8px;margin-right:16px;-webkit-app-region:no-drag}
+.tl-btn{width:12px;height:12px;border-radius:50%;border:none;cursor:pointer;position:relative}
+.tl-close{background:#FF5F57}.tl-minimize{background:#FEBC2E}.tl-maximize{background:#28C840}
+.tl-btn:hover::after{content:'';position:absolute;inset:0;border-radius:50%;background:rgba(0,0,0,0.15)}
+.titlebar-text{flex:1;text-align:center;font-size:13px;font-weight:500;color:#999;letter-spacing:0.3px;user-select:none}
+.titlebar-version{font-size:10px;color:#666;margin-left:8px}
+.toolbar{height:var(--toolbar-h);background:var(--bg-secondary);display:flex;align-items:center;padding:0 12px;gap:6px;border-bottom:1px solid var(--border);flex-shrink:0}
+.tb-btn{height:30px;padding:0 12px;border-radius:6px;border:1px solid var(--border);background:var(--bg-tertiary);color:var(--text-primary);font-size:12px;cursor:pointer;display:flex;align-items:center;gap:5px;transition:all 0.15s;white-space:nowrap}
+.tb-btn:hover{background:#3E3E42;border-color:#555}
+.tb-btn:active{background:#333;transform:scale(0.97)}
+.tb-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:500}
+.tb-btn.primary:hover{background:var(--accent-hover)}
+.tb-sep{width:1px;height:24px;background:var(--border);margin:0 4px;flex-shrink:0}
+.tb-info{margin-left:auto;font-size:11px;color:var(--text-secondary);display:flex;gap:12px}
+.tb-info span{display:flex;align-items:center;gap:4px}
+.tb-info b{color:var(--text-accent);font-weight:600}
+.main-container{flex:1;display:flex;overflow:hidden}
+.sidebar{width:var(--sidebar-w);background:var(--bg-sidebar);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0}
+.sidebar-header{padding:8px 10px;border-bottom:1px solid var(--border)}
+.sidebar-search{width:100%;height:28px;background:var(--bg-tertiary);border:1px solid var(--border);border-radius:6px;padding:0 8px;color:var(--text-primary);font-size:12px;outline:none}
+.sidebar-search:focus{border-color:var(--accent)}
+.sidebar-search::placeholder{color:#555}
+.sidebar-tabs{display:flex;border-bottom:1px solid var(--border)}
+.sidebar-tab{flex:1;padding:8px 0;text-align:center;font-size:11px;color:var(--text-secondary);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s}
+.sidebar-tab.active{color:var(--text-accent);border-bottom-color:var(--accent)}
+.sidebar-content{flex:1;overflow-y:auto;padding:4px 0}
+.msg-item{display:flex;align-items:center;padding:6px 10px;cursor:pointer;border-left:3px solid transparent;transition:all 0.1s;gap:8px}
+.msg-item:hover{background:var(--row-hover)}
+.msg-item.active{background:var(--row-selected);border-left-color:var(--accent)}
+.msg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.msg-info{flex:1;min-width:0}
+.msg-id{font-size:12px;font-weight:600;color:var(--text-accent);font-family:'SF Mono','Menlo',monospace}
+.msg-name{font-size:10px;color:var(--text-secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.msg-meta{font-size:10px;color:#555;flex-shrink:0;text-align:right}
+.msg-meta b{color:#888}
+.sig-item{display:flex;align-items:center;padding:5px 10px 5px 20px;cursor:pointer;gap:6px;transition:all 0.1s}
+.sig-item:hover{background:var(--row-hover)}
+.sig-item.active{background:var(--row-selected)}
+.sig-color{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.sig-name{flex:1;font-size:11px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sig-val{font-size:11px;font-family:'SF Mono','Menlo',monospace;color:var(--text-accent);flex-shrink:0}
+.main-view{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.view-tabs{display:flex;background:var(--bg-secondary);border-bottom:1px solid var(--border);padding:0 8px;flex-shrink:0}
+.view-tab{padding:8px 16px;font-size:12px;color:var(--text-secondary);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s}
+.view-tab.active{color:var(--text-accent);border-bottom-color:var(--accent)}
+.view-content{flex:1;overflow:hidden;position:relative}
+.view-panel{display:none;flex-direction:column;height:100%}
+.view-panel.active{display:flex}
+.chart-area{flex:1;overflow-y:auto;overflow-x:hidden;background:#1A1A1A;padding:8px}
+.chart-container{border:1px solid var(--border);border-radius:6px;margin-bottom:8px;overflow:hidden;background:var(--bg-secondary)}
+.chart-header{display:flex;align-items:center;padding:6px 10px;background:var(--bg-tertiary);border-bottom:1px solid var(--border);gap:6px}
+.chart-title{font-size:11px;font-weight:600}
+.chart-value{font-size:11px;color:#D4D4D4;font-family:'SF Mono','Menlo',monospace;margin-left:auto}
+.chart-canvas-wrap{position:relative;height:120px}
+.chart-canvas-wrap canvas{width:100%;height:100%;display:block}
+.data-table-wrap{flex:1;overflow:auto;padding:8px}
+.data-table{width:100%;border-collapse:collapse;font-size:12px}
+.data-table th{background:var(--bg-tertiary);padding:6px 10px;text-align:left;color:var(--text-secondary);font-size:10px;text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:1}
+.data-table td{padding:5px 10px;border-bottom:1px solid rgba(255,255,255,0.03);font-family:'SF Mono','Menlo',monospace;font-size:11px}
+.data-table tr:hover td{background:var(--row-hover)}
+.hex-val{color:#CE9178}.id-val{color:var(--text-accent);font-weight:600}.time-val{color:#B5CEA8}.sig-val-cell{color:#D7BA7D}
+.proto-view{flex:1;overflow-y:auto;padding:12px}
+.proto-card{background:var(--bg-secondary);border:1px solid var(--border);border-radius:8px;margin-bottom:8px;overflow:hidden}
+.proto-card-hdr{display:flex;align-items:center;padding:8px 12px;background:var(--bg-tertiary);border-bottom:1px solid var(--border);gap:8px}
+.proto-card-id{font-size:13px;font-weight:700;color:var(--text-accent);font-family:'SF Mono','Menlo',monospace}
+.proto-card-name{font-size:12px;color:var(--text-primary);flex:1}
+.proto-card-meta{font-size:10px;color:var(--text-secondary)}
+.proto-sig-table{width:100%;border-collapse:collapse;font-size:11px}
+.proto-sig-table th{padding:5px 8px;text-align:left;color:var(--text-secondary);font-size:9px;text-transform:uppercase;border-bottom:1px solid var(--border);background:var(--bg-tertiary)}
+.proto-sig-table td{padding:4px 8px;border-bottom:1px solid rgba(255,255,255,0.02)}
+.statusbar{height:var(--statusbar-h);background:var(--bg-secondary);border-top:1px solid var(--border);display:flex;align-items:center;padding:0 12px;gap:16px;flex-shrink:0;font-size:11px;color:var(--text-secondary)}
+.statusbar .version-info{margin-left:auto;display:flex;align-items:center;gap:8px}
+.statusbar .ver{color:var(--text-accent);font-weight:500}
+.statusbar .date{color:#666}
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:#555;gap:8px;padding:40px}
+.empty-state .es-icon{font-size:48px;opacity:0.3}
+.empty-state .es-text{font-size:13px}
+.empty-state .es-hint{font-size:11px;color:#444}
+.drop-overlay{position:fixed;inset:0;background:rgba(0,122,255,0.1);border:3px dashed var(--accent);z-index:1000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.drop-overlay.show{display:flex}
+.drop-overlay .drop-text{font-size:20px;color:var(--accent);font-weight:600;background:var(--bg-primary);padding:20px 40px;border-radius:12px}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:500;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.modal-overlay.show{display:flex}
+.modal-box{background:var(--bg-secondary);border:1px solid var(--border);border-radius:12px;padding:20px;min-width:360px;max-width:90vw;box-shadow:0 20px 60px rgba(0,0,0,0.5)}
+.modal-title{font-size:16px;font-weight:600;color:var(--text-primary);margin-bottom:16px}
+.modal-body{margin-bottom:16px;color:var(--text-primary);line-height:1.6}
+.modal-btns{display:flex;gap:8px;justify-content:flex-end}
+.modal-btn{padding:8px 20px;border-radius:6px;border:1px solid var(--border);background:var(--bg-tertiary);color:var(--text-primary);font-size:12px;cursor:pointer}
+.modal-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+</style>
+</head>
+<body>
+<div class="titlebar">
+  <div class="traffic-lights"><button class="tl-btn tl-close"></button><button class="tl-btn tl-minimize"></button><button class="tl-btn tl-maximize"></button></div>
+  <div class="titlebar-text">CAN Mac Analyzer <span class="titlebar-version" id="titleVersion"></span></div>
+</div>
+<div class="toolbar">
+  <button class="tb-btn primary" onclick="document.getElementById('fileInput').click()">📂 打开文件</button>
+  <input type="file" id="fileInput" accept=".asc,.blf,.dbc,.txt,.csv" multiple style="display:none">
+  <div class="tb-sep"></div>
+  <button class="tb-btn" id="btnParse" onclick="startParse()" disabled>▶ 解析</button>
+  <button class="tb-btn" onclick="clearAll()">🗑 清除</button>
+  <div class="tb-sep"></div>
+  <button class="tb-btn" id="btnExport" onclick="exportData()" disabled>📊 导出CSV</button>
+  <div class="tb-info"><span>帧 <b id="statFrames">0</b></span><span>ID <b id="statIDs">0</b></span><span>信号 <b id="statSignals">0</b></span><span>时长 <b id="statDuration">0s</b></span></div>
+</div>
+<div class="main-container">
+  <div class="sidebar">
+    <div class="sidebar-header"><input type="text" class="sidebar-search" id="sidebarSearch" placeholder="🔍 搜索ID或名称..." oninput="filterSidebar()"></div>
+    <div class="sidebar-tabs"><div class="sidebar-tab active" data-tab="messages" onclick="switchSidebarTab(this)">报文</div><div class="sidebar-tab" data-tab="signals" onclick="switchSidebarTab(this)">信号</div></div>
+    <div class="sidebar-content" id="sidebarContent"><div class="empty-state" style="height:200px"><div class="es-icon">📋</div><div class="es-hint">打开ASC/BLF/DBC文件开始</div></div></div>
+  </div>
+  <div class="main-view">
+    <div class="view-tabs">
+      <div class="view-tab active" data-view="chart" onclick="switchView(this)">📈 波形</div>
+      <div class="view-tab" data-view="data" onclick="switchView(this)">📋 数据</div>
+      <div class="view-tab" data-view="proto" onclick="switchView(this)">📖 协议</div>
+    </div>
+    <div class="view-content">
+      <div class="view-panel active" id="viewChart"><div class="chart-area" id="chartArea"><div class="empty-state"><div class="es-icon">📈</div><div class="es-text">暂无波形数据</div><div class="es-hint">请先打开ASC/BLF文件和DBC文件，然后点击解析</div></div></div></div>
+      <div class="view-panel" id="viewData"><div class="data-table-wrap"><table class="data-table"><thead><tr><th>时间</th><th>通道</th><th>ID</th><th>DLC</th><th>数据</th><th>周期</th><th>信号值</th></tr></thead><tbody id="dataTableBody"></tbody></table></div></div>
+      <div class="view-panel" id="viewProto"><div class="proto-view" id="protoView"><div class="empty-state"><div class="es-icon">📖</div><div class="es-text">暂无协议定义</div><div class="es-hint">请先加载DBC文件</div></div></div></div>
+    </div>
+  </div>
+</div>
+<div class="statusbar">
+  <span>就绪</span><span id="statusInfo"></span>
+  <div class="version-info"><span class="ver" id="statusVersion"></span><span class="date" id="statusDate"></span></div>
+</div>
+<div class="drop-overlay" id="dropOverlay"><div class="drop-text">📁 拖放文件到此处</div></div>
+<div class="modal-overlay" id="modalOverlay"><div class="modal-box"><div class="modal-title" id="modalTitle">提示</div><div class="modal-body" id="modalBody"></div><div class="modal-btns"><button class="modal-btn primary" onclick="closeModal()">确定</button></div></div></div>
+
+<script>
+/* ============================================================
+ * CAN Mac Analyzer - 核心逻辑
+ * ⚠️ 任何代码改动都必须同步更新文件顶部的 VERSION 和 BUILD_DATE
+ *
+ * 功能清单：
+ * 1. DBC文件解析（BO_ SG_ CM_ BA_DEF_ BA_ VAL_）
+ * 2. ASC文件解析（支持多种时间戳格式）
+ * 3. BLF文件解析（使用pako解压zlib数据块）
+ * 4. 信号解码（Intel/Motorola字节序，有符号/无符号）
+ * 5. 波形Canvas绘制
+ * 6. 数据表格展示
+ * 7. 协议定义展示
+ * 8. 拖拽上传
+ * 9. CSV导出
+ * ============================================================ */
+
+// ==================== 全局状态 ====================
+var state = {
+    ascFiles:[], dbcFiles:[], messages:{}, dbcDefs:{}, frames:[],
+    selectedMsg:null, signalColors:{}, parsed:false, colorIndex:0
+};
+var COLORS = ['#4FC1FF','#FF6B6B','#4EC9B0','#D7BA7D','#C586C0','#DCDCAA','#569CD6','#CE9178','#B5CEA8','#9CDCFE','#F44747','#6A9955','#D4D4D4'];
+
+// ==================== 版本初始化 ====================
+(function(){
+    document.getElementById('titleVersion').textContent = '(' + APP_VERSION + ')';
+    document.getElementById('statusVersion').textContent = 'CAN Mac ' + APP_VERSION;
+    document.getElementById('statusDate').textContent = BUILD_DATE;
+})();
+
+// ==================== DBC 解析器 ====================
+function parseDBC(text) {
+    var defs = {}, lines = text.split('\n'), currentMsg = null, valTable = {};
+    for (var i = 0; i < lines.length; i++) {
+        var line = lines[i].trim();
+        if (!line || line.startsWith('//')) continue;
+        // BO_ ID Name: DLC Sender
+        var boMatch = line.match(/^BO_\s+(\d+)\s+(\w+)\s*:\s*(\d+)\s+(\w+)/);
+        if (boMatch) {
+            var id = parseInt(boMatch[1]);
+            if (id >= 0x80000000) id -= 0x80000000;
+            currentMsg = {id:id, name:boMatch[2], dlc:parseInt(boMatch[3]), sender:boMatch[4], signals:[]};
+            defs[id] = currentMsg;
+            continue;
+        }
+        // SG_ Name : StartBit|BitLength@ByteOrder Sign (Factor,Offset) [Min|Max] "Unit" Receiver
+        var sgMatch = line.match(/^SG_\s+(\w+)\s*:\s*(\d+)\|(\d+)@([01])([+-])\s*\(([^,]+),([^)]+)\)\s*\[([^|]+)\|([^\]]+)\]\s*"([^"]*)"\s*(.*)/);
+        if (sgMatch && currentMsg) {
+            currentMsg.signals.push({
+                name:sgMatch[1], startBit:parseInt(sgMatch[2]), bitLength:parseInt(sgMatch[3]),
+                byteOrder:parseInt(sgMatch[4]), sign:sgMatch[5],
+                factor:parseFloat(sgMatch[6]), offset:parseFloat(sgMatch[7]),
+                min:parseFloat(sgMatch[8]), max:parseFloat(sgMatch[9]),
+                unit:sgMatch[10], receiver:sgMatch[11].trim()
+            });
+            continue;
+        }
+        // VAL_ MsgID SigName Val "Desc" ... ;
+        var valMatch = line.match(/^VAL_\s+(\d+)\s+(\w+)\s+(.*?)\s*;/);
+        if (valMatch) {
+            var msgId = parseInt(valMatch[1]); if(msgId>=0x80000000) msgId-=0x80000000;
+            var valPairs = valMatch[3].match(/(\d+)\s+"([^"]+)"/g);
+            if (valPairs) {
+                var vt = {};
+                for (var j=0;j<valPairs.length;j++){var pm=valPairs[j].match(/(\d+)\s+"([^"]+)"/);if(pm)vt[parseInt(pm[1])]=pm[2];}
+                if(!valTable[msgId])valTable[msgId]={}; valTable[msgId][valMatch[2]]=vt;
+            }
+            continue;
+        }
+        // CM_ BO_ ID "Comment"
+        var cmMatch = line.match(/^CM_\s+BO_\s+(\d+)\s+"([^"]*)"/);
+        if (cmMatch) {var cmId=parseInt(cmMatch[1]);if(cmId>=0x80000000)cmId-=0x80000000;if(defs[cmId])defs[cmId].comment=cmMatch[2];}
+    }
+    for(var mid in valTable)if(defs[mid])defs[mid].valTable=valTable[mid];
+    return defs;
+}
+
+// ==================== ASC 解析器 ====================
+function parseASC(text) {
+    var frames=[], lines=text.split('\n'), baseTime=0, hasBase=false;
+    for(var i=0;i<lines.length;i++){
+        var line=lines[i].trim();
+        if(!line||line.startsWith('//'))continue;
+        // timestamp ch IDx DLC data...
+        var m=line.match(/^(\d+\.?\d*)\s+(\d+)\s+([0-9A-Fa-f]+)[xX]?\s+(\d+)\s+((?:[0-9A-Fa-f]{2}\s*)+)/);
+        if(!m)m=line.match(/^(\d+\.?\d*)\s+CAN\s+(\d+)\s+([0-9A-Fa-f]+)\s+(\d+)\s+((?:[0-9A-Fa-f]{2}\s*)+)/);
+        if(m){
+            var time=parseFloat(m[1]),ch=parseInt(m[2]),id=parseInt(m[3],16),dlc=parseInt(m[4]);
+            var data=m[5].trim().split(/\s+/).map(function(h){return parseInt(h,16);});
+            if(!hasBase){baseTime=time;hasBase=true;}
+            frames.push({time:time-baseTime,id:id,ch:ch,dlc:dlc,data:data});
+        }
+    }
+    return frames;
+}
+
+// ==================== BLF 解析器 ====================
+function parseBLF(buffer) {
+    var frames=[];
+    if(buffer.byteLength<144)return frames;
+    var view=new DataView(buffer);
+    // 检查签名
+    var sig='';for(var i=0;i<4;i++)sig+=String.fromCharCode(view.getUint8(i));
+    if(sig!=='BLF0'){console.warn('BLF签名不匹配:',sig);return frames;}
+    var pos=144; // 跳过文件头
+    while(pos<buffer.byteLength-16){
+        if(pos+4>buffer.byteLength)break;
+        var objSig=String.fromCharCode(view.getUint8(pos),view.getUint8(pos+1),view.getUint8(pos+2),view.getUint8(pos+3));
+        if(objSig!=='LOBJ'){pos++;continue;}
+        var headerLen=view.getUint16(pos+4,true);
+        var objType=view.getUint16(pos+8,true);
+        var objLen=view.getUint32(pos+12,true);
+        if(objLen<16||objLen>1000000||pos+objLen>buffer.byteLength){pos+=4;continue;}
+        if(objType===1){ // LOG_CONTAINER
+            var compMethod=view.getUint16(pos+headerLen,true);
+            var compSize=view.getUint32(pos+headerLen+8,true);
+            if(compSize>0&&pos+headerLen+12+compSize<=buffer.byteLength){
+                try{
+                    var compData=new Uint8Array(buffer,pos+headerLen+12,compSize);
+                    var decomp=(compMethod===2&&typeof pako!=='undefined')?pako.inflate(compData):compData;
+                    var subFrames=parseBLFContainer(decomp);
+                    frames=frames.concat(subFrames);
+                }catch(e){console.warn('BLF解压失败:',e);}
+            }
+        }
+        pos+=objLen;pos=(pos+3)&~3;
+    }
+    return frames;
+}
+function parseBLFContainer(data){
+    var frames=[],pos=0;
+    while(pos<data.length-16){
+        if(String.fromCharCode(data[pos],data[pos+1],data[pos+2],data[pos+3])!=='LOBJ'){pos++;continue;}
+        var hLen=(data[pos+5]<<8)|data[pos+4];
+        var oType=(data[pos+9]<<8)|data[pos+8];
+        var oLen=(data[pos+15]<<24)|(data[pos+14]<<16)|(data[pos+13]<<8)|data[pos+12];
+        if(oLen<16||pos+oLen>data.length){pos+=4;continue;}
+        if(oType===73){ // CAN_MESSAGE
+            var view=new DataView(data.buffer,data.byteOffset+pos,data.length-pos);
+            var ts=view.getFloat64(hLen,true);
+            var ch=data[pos+hLen+8];
+            var dlc=data[pos+hLen+10];
+            var id=(data[pos+hLen+15]<<24)|(data[pos+hLen+14]<<16)|(data[pos+hLen+13]<<8)|data[pos+hLen+12];
+            if(id>=0x80000000)id-=0x80000000;
+            var d=[];for(var j=0;j<dlc&&j<8;j++)d.push(data[pos+hLen+16+j]);
+            frames.push({time:ts/1e9,id:id,ch:ch,dlc:dlc,data:d});
+        }
+        pos+=oLen;pos=(pos+3)&~3;
+    }
+    return frames;
+}
+
+// ==================== 信号解码 ====================
+function decodeSignal(data,sig){
+    var raw=extractBits(data,sig.startBit,sig.bitLength,sig.byteOrder);
+    if(sig.sign==='-'&&raw>=(1<<(sig.bitLength-1)))raw-=(1<<sig.bitLength);
+    return raw*sig.factor+sig.offset;
+}
+function extractBits(data,start,len,bo){
+    var val=0;
+    if(bo===1){//Intel
+        for(var i=0;i<len;i++){var bp=start+i,bi=Math.floor(bp/8),bb=bp%8;if(bi<data.length)val|=((data[bi]>>bb)&1)<<i;}
+    }else{//Motorola
+        for(var i=0;i<len;i++){var bp=start-i;if(bp<0)bp+=8*Math.floor(-bp/8+1);var bi=Math.floor(bp/8),bb=bp%8;if(bi<data.length)val=(val<<1)|((data[bi]>>bb)&1);}
+    }
+    return val;
+}
+
+// ==================== 文件处理 ====================
+document.getElementById('fileInput').addEventListener('change',function(e){processFiles(Array.from(e.target.files));});
+function processFiles(files){
+    var pending=files.length;if(pending===0)return;
+    files.forEach(function(f){
+        var ext=f.name.split('.').pop().toLowerCase();
+        if(ext==='dbc'){
+            var r=new FileReader();
+            r.onload=function(ev){var d=parseDBC(ev.target.result);for(var id in d)state.dbcDefs[id]=d[id];state.dbcFiles.push(f.name);updateStatus();if(--pending===0)checkReady();};
+            r.readAsText(f);
+        }else if(ext==='asc'||ext==='txt'||ext==='csv'){
+            var r2=new FileReader();
+            r2.onload=function(ev){var fr=parseASC(ev.target.result);state.frames=state.frames.concat(fr);state.ascFiles.push(f.name);updateStatus();if(--pending===0)checkReady();};
+            r2.readAsText(f);
+        }else if(ext==='blf'){
+            var r3=new FileReader();
+            r3.onload=function(ev){var fr=parseBLF(ev.target.result);state.frames=state.frames.concat(fr);state.ascFiles.push(f.name);updateStatus();if(--pending===0)checkReady();};
+            r3.readAsArrayBuffer(f);
+        }else{pending--;if(pending===0)checkReady();}
+    });
+}
+function checkReady(){document.getElementById('btnParse').disabled=!(state.frames.length>0||Object.keys(state.dbcDefs).length>0);}
+function updateStatus(){document.getElementById('statusInfo').textContent='ASC:'+state.ascFiles.length+' DBC:'+state.dbcFiles.length+' 帧:'+state.frames.length;}
+
+// ==================== 拖拽支持 ====================
+var dragC=0;
+document.addEventListener('dragenter',function(e){e.preventDefault();dragC++;document.getElementById('dropOverlay').classList.add('show');});
+document.addEventListener('dragleave',function(e){e.preventDefault();dragC--;if(dragC<=0){document.getElementById('dropOverlay').classList.remove('show');dragC=0;}});
+document.addEventListener('dragover',function(e){e.preventDefault();});
+document.addEventListener('drop',function(e){e.preventDefault();document.getElementById('dropOverlay').classList.remove('show');dragC=0;if(e.dataTransfer.files.length)processFiles(Array.from(e.dataTransfer.files));});
+
+// ==================== 解析入口 ====================
+function startParse(){
+    if(state.frames.length===0&&Object.keys(state.dbcDefs).length===0){showModal('提示','请先加载ASC/BLF和DBC文件');return;}
+    state.frames.sort(function(a,b){return a.time-b.time;});
+    state.messages={};
+    state.frames.forEach(function(f){
+        if(!state.messages[f.id]){var dbc=state.dbcDefs[f.id];state.messages[f.id]={id:f.id,name:dbc?dbc.name:'Unknown',dlc:f.dlc,signals:dbc?dbc.signals:[],valTable:dbc?dbc.valTable:null,frames:[],count:0};}
+        state.messages[f.id].frames.push(f);state.messages[f.id].count++;
+    });
+    state.parsed=true;document.getElementById('btnExport').disabled=false;
+    var uids=Object.keys(state.messages).length,sigC=0;
+    for(var m in state.messages)sigC+=state.messages[m].signals.length;
+    var dur=state.frames.length>0?state.frames[state.frames.length-1].time-state.frames[0].time:0;
+    document.getElementById('statFrames').textContent=state.frames.length;
+    document.getElementById('statIDs').textContent=uids;
+    document.getElementById('statSignals').textContent=sigC;
+    document.getElementById('statDuration').textContent=dur.toFixed(2)+'s';
+    renderSidebar();renderProtoView();
+    var first=Object.keys(state.messages)[0];if(first)selectMessage(parseInt(first));
+    showModal('解析完成','共解析 '+state.frames.length+' 帧，'+uids+' 个ID，'+sigC+' 个信号');
+}
+
+// ==================== 侧边栏 ====================
+function renderSidebar(){
+    var c=document.getElementById('sidebarContent');
+    var tab=document.querySelector('.sidebar-tab.active').dataset.tab;
+    if(tab==='messages')renderMsgList(c);else renderSigList(c);
+}
+function renderMsgList(c){
+    var html='';var sorted=Object.values(state.messages).sort(function(a,b){return a.id-b.id;});
+    sorted.forEach(function(msg){
+        var color=COLORS[msg.id%COLORS.length];
+        var hex=msg.id.toString(16).toUpperCase();
+        var act=state.selectedMsg===msg.id?' active':'';
+        html+='<div class="msg-item'+act+'" onclick="selectMessage('+msg.id+')" data-id="'+msg.id+'"><div class="msg-dot" style="background:'+color+'"></div><div class="msg-info"><div class="msg-id">0x'+hex+'</div><div class="msg-name">'+msg.name+'</div></div><div class="msg-meta"><b>'+msg.count+'</b>帧</div></div>';
+    });
+    c.innerHTML=html;
+}
+function renderSigList(c){
+    var html='';
+    for(var mid in state.messages){
+        state.messages[mid].signals.forEach(function(sig,idx){
+            var color=COLORS[(parseInt(mid)+idx)%COLORS.length];
+            var last=state.messages[mid].frames.length>0?decodeSignal(state.messages[mid].frames[state.messages[mid].frames.length-1].data,sig).toFixed(3):'--';
+            html+='<div class="sig-item" onclick="selectMessage('+mid+')"><div class="sig-color" style="background:'+color+'"></div><div class="sig-name">'+sig.name+'</div><div class="sig-val">'+last+(sig.unit?' '+sig.unit:'')+'</div></div>';
+        });
+    }
+    c.innerHTML=html||'<div class="empty-state" style="height:200px"><div class="es-hint">无信号定义</div></div>';
+}
+function filterSidebar(){
+    var q=document.getElementById('sidebarSearch').value.toLowerCase();
+    document.querySelectorAll('#sidebarContent .msg-item,#sidebarContent .sig-item').forEach(function(el){
+        el.style.display=el.textContent.toLowerCase().indexOf(q)>=0?'':'none';
+    });
+}
+function switchSidebarTab(el){document.querySelectorAll('.sidebar-tab').forEach(function(t){t.classList.remove('active');});el.classList.add('active');renderSidebar();}
+
+// ==================== 报文选择 ====================
+function selectMessage(id){
+    state.selectedMsg=id;
+    document.querySelectorAll('.msg-item').forEach(function(el){el.classList.toggle('active',parseInt(el.dataset.id)===id);});
+    var msg=state.messages[id];if(!msg)return;
+    renderCharts(msg);renderDataTable(msg);
+}
+
+// ==================== 波形渲染 ====================
+function renderCharts(msg){
+    var area=document.getElementById('chartArea');
+    if(!msg.signals||msg.signals.length===0){area.innerHTML='<div class="empty-state"><div class="es-icon">📈</div><div class="es-text">该报文无信号定义</div><div class="es-hint">请加载对应的DBC文件</div></div>';return;}
+    var html='';
+    msg.signals.forEach(function(sig,idx){
+        var color=COLORS[(msg.id+idx)%COLORS.length];
+        var cid='ch_'+msg.id+'_'+idx;
+        var last=msg.frames.length>0?decodeSignal(msg.frames[msg.frames.length-1].data,sig).toFixed(3):'--';
+        html+='<div class="chart-container"><div class="chart-header"><div class="chart-title" style="color:'+color+'">● '+sig.name+'</div><div class="chart-value">'+last+' '+sig.unit+'</div></div><div class="chart-canvas-wrap"><canvas id="'+cid+'"></canvas></div></div>';
+    });
+    area.innerHTML=html;
+    msg.signals.forEach(function(sig,idx){
+        var cv=document.getElementById('ch_'+msg.id+'_'+idx);
+        if(cv)drawChart(cv,msg,sig,COLORS[(msg.id+idx)%COLORS.length]);
+    });
+}
+function drawChart(canvas,msg,sig,color){
+    var rect=canvas.parentElement.getBoundingClientRect();
+    var dpr=window.devicePixelRatio||1;
+    canvas.width=rect.width*dpr;canvas.height=rect.height*dpr;
+    canvas.style.width=rect.width+'px';canvas.style.height=rect.height+'px';
+    var ctx=canvas.getContext('2d');ctx.scale(dpr,dpr);
+    var W=rect.width,H=rect.height;
+    var pts=[],minV=Infinity,maxV=-Infinity;
+    msg.frames.forEach(function(f){var v=decodeSignal(f.data,sig);pts.push({t:f.time,v:v});if(v<minV)minV=v;if(v>maxV)maxV=v;});
+    if(pts.length===0)return;
+    if(minV===maxV){minV-=1;maxV+=1;}
+    var range=maxV-minV;minV-=range*0.1;maxV+=range*0.1;range=maxV-minV;
+    var pad={l:50,r:10,t:10,b:20},pW=W-pad.l-pad.r,pH=H-pad.t-pad.b;
+    var tMin=pts[0].t,tMax=pts[pts.length-1].t,tR=tMax-tMin||1;
+    ctx.fillStyle='#1A1A1A';ctx.fillRect(0,0,W,H);
+    ctx.strokeStyle='rgba(255,255,255,0.05)';ctx.lineWidth=1;
+    for(var gi=0;gi<=4;gi++){var gy=pad.t+(pH/4)*gi;ctx.beginPath();ctx.moveTo(pad.l,gy);ctx.lineTo(W-pad.r,gy);ctx.stroke();}
+    ctx.fillStyle='#666';ctx.font='10px -apple-system,sans-serif';ctx.textAlign='right';
+    for(var yi=0;yi<=4;yi++){var yv=maxV-(range/4)*yi;ctx.fillText(yv.toFixed(1),pad.l-5,pad.t+(pH/4)*yi+3);}
+    ctx.textAlign='center';
+    for(var xi=0;xi<=5;xi++){var xv=tMin+(tR/5)*xi;ctx.fillText(xv.toFixed(2)+'s',pad.l+(pW/5)*xi,H-4);}
+    ctx.strokeStyle=color;ctx.lineWidth=1.5;ctx.beginPath();var started=false;
+    pts.forEach(function(p){var x=pad.l+((p.t-tMin)/tR)*pW,y=pad.t+((maxV-p.v)/range)*pH;if(!started){ctx.moveTo(x,y);started=true;}else ctx.lineTo(x,y);});
+    ctx.stroke();
+    ctx.lineTo(pad.l+pW,pad.t+pH);ctx.lineTo(pad.l,pad.t+pH);ctx.closePath();
+    ctx.fillStyle=color.replace(')',',0.08)').replace('rgb','rgba');ctx.fill();
+}
+
+// ==================== 数据表格 ====================
+function renderDataTable(msg){
+    var tb=document.getElementById('dataTableBody'),html='';
+    var disp=msg.frames.slice(-200);
+    disp.forEach(function(f){
+        var hex=f.data.map(function(b){return('0'+b.toString(16).toUpperCase()).slice(-2);}).join(' ');
+        var sigs='';
+        if(msg.signals.length>0){msg.signals.forEach(function(sig,idx){
+            var v=decodeSignal(f.data,sig),d=v.toFixed(2);
+            if(msg.valTable&&msg.valTable[sig.name]&&msg.valTable[sig.name][Math.round(v)])d=msg.valTable[sig.name][Math.round(v)];
+            sigs+=(idx>0?', ':'')+sig.name+'='+d;
+        });}
+        var per='';var fi=msg.frames.indexOf(f);if(fi>0)per=((f.time-msg.frames[fi-1].time)*1000).toFixed(1)+'ms';
+        html+='<tr><td class="time-val">'+f.time.toFixed(6)+'</td><td>'+f.ch+'</td><td class="id-val">0x'+f.id.toString(16).toUpperCase()+'</td><td>'+f.dlc+'</td><td class="hex-val">'+hex+'</td><td>'+per+'</td><td class="sig-val-cell">'+sigs+'</td></tr>';
+    });
+    tb.innerHTML=html;
+}
+
+// ==================== 协议视图 ====================
+function renderProtoView(){
+    var v=document.getElementById('protoView'),html='';
+    Object.values(state.dbcDefs).sort(function(a,b){return a.id-b.id;}).forEach(function(msg){
+        var hex=msg.id.toString(16).toUpperCase();
+        html+='<div class="proto-card"><div class="proto-card-hdr"><div class="proto-card-id">0x'+hex+'</div><div class="proto-card-name">'+msg.name+'</div><div class="proto-card-meta">DLC:'+msg.dlc+(msg.sender?' | '+msg.sender:'')+'</div></div>';
+        if(msg.signals.length>0){
+            html+='<table class="proto-sig-table"><thead><tr><th>信号名</th><th>起始位</th><th>长度</th><th>字节序</th><th>因子</th><th>偏移</th><th>范围</th><th>单位</th></tr></thead><tbody>';
+            msg.signals.forEach(function(s){
+                html+='<tr><td>'+s.name+'</td><td>'+s.startBit+'</td><td>'+s.bitLength+'</td><td>'+(s.byteOrder===1?'Intel':'Motorola')+'</td><td>'+s.factor+'</td><td>'+s.offset+'</td><td>['+s.min+'|'+s.max+']</td><td>'+s.unit+'</td></tr>';
+            });
+            html+='</tbody></table>';
+        }else html+='<div style="padding:10px;color:#555;font-size:11px">无信号定义</div>';
+        html+='</div>';
+    });
+    if(!html)html='<div class="empty-state"><div class="es-icon">📖</div><div class="es-text">暂无协议定义</div></div>';
+    v.innerHTML=html;
+}
+
+// ==================== 视图切换 ====================
+function switchView(el){
+    document.querySelectorAll('.view-tab').forEach(function(t){t.classList.remove('active');});
+    el.classList.add('active');
+    var vn=el.dataset.view;
+    document.querySelectorAll('.view-panel').forEach(function(p){p.classList.remove('active');});
+    document.getElementById('view'+vn.charAt(0).toUpperCase()+vn.slice(1)).classList.add('active');
+}
+
+// ==================== 工具函数 ====================
+function clearAll(){
+    state={ascFiles:[],dbcFiles:[],messages:{},dbcDefs:{},frames:[],selectedMsg:null,signalColors:{},parsed:false,colorIndex:0};
+    ['statFrames','statIDs','statSignals'].forEach(function(id){document.getElementById(id).textContent='0';});
+    document.getElementById('statDuration').textContent='0s';
+    document.getElementById('btnParse').disabled=true;document.getElementById('btnExport').disabled=true;
+    document.getElementById('sidebarContent').innerHTML='<div class="empty-state" style="height:200px"><div class="es-icon">📋</div><div class="es-hint">打开ASC/BLF/DBC文件开始</div></div>';
+    document.getElementById('chartArea').innerHTML='<div class="empty-state"><div class="es-icon">📈</div><div class="es-text">暂无波形数据</div></div>';
+    document.getElementById('dataTableBody').innerHTML='';
+    document.getElementById('protoView').innerHTML='<div class="empty-state"><div class="es-icon">📖</div><div class="es-text">暂无协议定义</div></div>';
+    document.getElementById('statusInfo').textContent='';
+}
+function exportData(){
+    if(!state.parsed)return;
+    var csv='时间,ID,DLC,数据\n';
+    state.frames.forEach(function(f){csv+=f.time.toFixed(6)+',0x'+f.id.toString(16).toUpperCase()+','+f.dlc+','+f.data.map(function(b){return('0'+b.toString(16)).slice(-2);}).join(' ')+'\n';});
+    var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+    a.download='can_export_'+new Date().toISOString().slice(0,10)+'.csv';a.click();
+}
+function showModal(t,b){document.getElementById('modalTitle').textContent=t;document.getElementById('modalBody').textContent=b;document.getElementById('modalOverlay').classList.add('show');}
+function closeModal(){document.getElementById('modalOverlay').classList.remove('show');}
+window.addEventListener('resize',function(){if(state.selectedMsg&&state.messages[state.selectedMsg])renderCharts(state.messages[state.selectedMsg]);});
+</script>
+</body>
+</html>
