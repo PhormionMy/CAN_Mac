@@ -77,6 +77,10 @@ button{font-family:inherit;cursor:pointer}input,select{font-family:inherit}
 .sr-dot{width:4px;height:4px;border-radius:50%;flex-shrink:0}
 .sr-name{flex:1;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .sr-val{font-family:'SF Mono',Menlo,Consolas,monospace;color:var(--green);flex-shrink:0;margin-left:2px;font-size:9px}
+.sr-drag{width:14px;height:14px;display:flex;align-items:center;justify-content:center;color:var(--text3);font-size:8px;cursor:grab;flex-shrink:0;opacity:.4;user-select:none;-webkit-user-select:none}
+.sr-drag:hover{opacity:1;color:var(--text2)}
+.sr.dragging{opacity:.4;background:rgba(10,132,255,.1)}
+.sr.drag-over{border-top:2px solid var(--blue)}
 
 /* 右侧 */
 .right{flex:1;display:flex;flex-direction:column;overflow:hidden}
@@ -352,7 +356,7 @@ function renderMsg(c){
         var filtered=m.frames.filter(function(f){return activeCh.indexOf(f.ch)>=0;});if(!filtered.length)return;
         var col=C[m.id%C.length],hx=m.id.toString(16).toUpperCase(),on=S.sel===m.id?' on':'';
         h+='<div class="mr'+on+'" onclick="selMsg('+m.id+')" data-id="'+m.id+'"><div class="mr-dot" style="background:'+col+'"></div><div class="mr-id">0x'+hx+'</div><div class="mr-name">'+m.name+'</div><div class="mr-cnt">'+filtered.length+'</div></div>';
-        if(S.sel===m.id){m.sigs.forEach(function(sig,idx){var sk=sigKey(m.id,sig.n),isChecked=WAVE.selectedSigs.indexOf(sk)>=0;var sigCol=C[(m.id+idx)%C.length];h+='<div class="sr"><div class="sr-cb'+(isChecked?' on':'')+'" onclick="event.stopPropagation();toggleSig(\''+sk+'\')">'+(isChecked?'✓':'')+'</div><div class="sr-dot" style="background:'+sigCol+'"></div><div class="sr-name">'+sig.n+'</div></div>';});}
+        if(S.sel===m.id){m.sigs.forEach(function(sig,idx){var sk=sigKey(m.id,sig.n),isChecked=WAVE.selectedSigs.indexOf(sk)>=0;var sigCol=C[(m.id+idx)%C.length];var skIdx=WAVE.selectedSigs.indexOf(sk);h+='<div class="sr" draggable="false" data-sk="'+sk+'" data-idx="'+skIdx+'"><div class="sr-drag" draggable="true" data-sk="'+sk+'" title="拖动排序">⠿</div><div class="sr-cb'+(isChecked?' on':'')+'" onclick="event.stopPropagation();toggleSig(\''+sk+'\')">'+(isChecked?'✓':'')+'</div><div class="sr-dot" style="background:'+sigCol+'"></div><div class="sr-name">'+sig.n+'</div></div>';});}
     });
     c.innerHTML=h||'<div class="empty" style="height:200px"><div class="t2">无匹配报文</div></div>';
 }
@@ -365,8 +369,8 @@ function renderSig(c){
     if(WAVE.sortMode==='name')allSigs.sort(function(a,b){return a.name.localeCompare(b.name);});
     else allSigs.sort(function(a,b){return a.mid-b.mid||a.idx-b.idx;});
     allSigs.forEach(function(s){
-        var sk=sigKey(s.mid,s.sig.n),isChecked=WAVE.selectedSigs.indexOf(sk)>=0;var col=C[(s.mid+s.idx)%C.length];
-        h+='<div class="sr"><div class="sr-cb'+(isChecked?' on':'')+'" onclick="toggleSig(\''+sk+'\')">'+(isChecked?'✓':'')+'</div><div class="sr-dot" style="background:'+col+'"></div><div class="sr-name">'+s.sig.n+'</div><div class="sr-val">0x'+s.mid.toString(16).toUpperCase()+'</div></div>';
+        var sk=sigKey(s.mid,s.sig.n),isChecked=WAVE.selectedSigs.indexOf(sk)>=0;var col=C[(s.mid+s.idx)%C.length];var skIdx=WAVE.selectedSigs.indexOf(sk);
+        h+='<div class="sr" draggable="false" data-sk="'+sk+'" data-idx="'+skIdx+'"><div class="sr-drag" draggable="true" data-sk="'+sk+'" title="拖动排序">⠿</div><div class="sr-cb'+(isChecked?' on':'')+'" onclick="toggleSig(\''+sk+'\')">'+(isChecked?'✓':'')+'</div><div class="sr-dot" style="background:'+col+'"></div><div class="sr-name">'+s.sig.n+'</div><div class="sr-val">0x'+s.mid.toString(16).toUpperCase()+'</div></div>';
     });
     c.innerHTML=h||'<div class="empty" style="height:200px"><div class="t2">无信号</div></div>';
 }
@@ -605,6 +609,60 @@ function doClear(){S={asc:[],dbc:[],msgs:{},defs:{},frames:[],sel:null,ci:0,pars
 function doExport(){if(!S.parsed)return;var csv='时间,CH,ID,DLC,数据\n';S.frames.forEach(function(f){csv+=f.t.toFixed(6)+','+f.ch+',0x'+f.id.toString(16).toUpperCase()+','+f.dl+','+f.d.map(function(b){return('0'+b.toString(16)).slice(-2);}).join(' ')+'\n';});var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='can_'+new Date().toISOString().slice(0,10)+'.csv';a.click();}
 function mShow(t,b){document.getElementById('mT').textContent=t;document.getElementById('mB').textContent=b;document.getElementById('mBg').classList.add('show');}
 function mClose(){document.getElementById('mBg').classList.remove('show');}
+
+// === 信号拖拽排序 ===
+var DRAG={sk:null,startIdx:-1};
+document.addEventListener('dragstart',function(e){
+    var handle=e.target.closest('.sr-drag');
+    if(!handle)return;
+    var sk=handle.dataset.sk;
+    DRAG.sk=sk;
+    DRAG.startIdx=WAVE.selectedSigs.indexOf(sk);
+    var row=handle.closest('.sr');
+    if(row)row.classList.add('dragging');
+    e.dataTransfer.effectAllowed='move';
+    e.dataTransfer.setData('text/plain',sk);
+    // 设置拖动图像
+    if(row)e.dataTransfer.setDragImage(row,20,10);
+});
+document.addEventListener('dragover',function(e){
+    if(!DRAG.sk)return;
+    e.preventDefault();
+    e.dataTransfer.dropEffect='move';
+    var row=e.target.closest('.sr');
+    // 清除之前的高亮
+    document.querySelectorAll('.sr.drag-over').forEach(function(el){el.classList.remove('drag-over');});
+    if(row&&row.dataset.sk!==DRAG.sk)row.classList.add('drag-over');
+});
+document.addEventListener('dragleave',function(e){
+    var row=e.target.closest('.sr');
+    if(row)row.classList.remove('drag-over');
+});
+document.addEventListener('drop',function(e){
+    e.preventDefault();
+    document.querySelectorAll('.sr.drag-over').forEach(function(el){el.classList.remove('drag-over');});
+    document.querySelectorAll('.sr.dragging').forEach(function(el){el.classList.remove('dragging');});
+    if(!DRAG.sk)return;
+    var targetRow=e.target.closest('.sr');
+    if(!targetRow||!targetRow.dataset.sk){DRAG.sk=null;return;}
+    var targetSk=targetRow.dataset.sk;
+    if(targetSk===DRAG.sk){DRAG.sk=null;return;}
+    var fromIdx=WAVE.selectedSigs.indexOf(DRAG.sk);
+    var toIdx=WAVE.selectedSigs.indexOf(targetSk);
+    if(fromIdx<0||toIdx<0){DRAG.sk=null;return;}
+    // 移动
+    WAVE.selectedSigs.splice(fromIdx,1);
+    WAVE.selectedSigs.splice(toIdx,0,DRAG.sk);
+    DRAG.sk=null;
+    renderSide();
+    renderWaveforms();
+});
+document.addEventListener('dragend',function(e){
+    DRAG.sk=null;
+    document.querySelectorAll('.sr.dragging').forEach(function(el){el.classList.remove('dragging');});
+    document.querySelectorAll('.sr.drag-over').forEach(function(el){el.classList.remove('drag-over');});
+});
+
 window.addEventListener('resize',function(){if(WAVE.selectedSigs.length)renderWaveforms();});
 </script>
 </body>
